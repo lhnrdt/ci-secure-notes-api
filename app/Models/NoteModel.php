@@ -7,12 +7,19 @@ use Exception;
 
 class NoteModel extends Model
 {
-    protected $table  = 'note';
-    protected $allowedFields = [
-        'title',
-        'content'
-    ];
+    protected $table = 'note';
+    protected $primaryKey = 'id';
+
+
+    protected $returnType = 'array';
+    protected $useAutoIncrement = true;
+
+    protected $allowedFields = ['title', 'content'];
+
+    protected $useTimestamps = true;
     protected $updatedField = 'updated_at';
+    protected $createdField = 'created_at';
+
 
     /**
      * @throws Exception

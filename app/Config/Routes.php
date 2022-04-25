@@ -32,11 +32,6 @@ $routes->setAutoRoute(true);
 // We get a performance increase by specifying the default
 // route since we don't have to scan directories.
 $routes->get('/', 'Home::index');
-$routes->get('note', 'Note::index');
-$routes->post('note', 'Note::store');
-$routes->get('note/(:id)', 'Note::show/$1');
-$routes->post('note/(:id)', 'Note::update/$1');
-$routes->delete('note/(:id)', 'Note::destroy/$1');
 
 /*
  * --------------------------------------------------------------------
@@ -54,3 +49,20 @@ $routes->delete('note/(:id)', 'Note::destroy/$1');
 if (file_exists(APPPATH . 'Config/' . ENVIRONMENT . '/Routes.php')) {
     require APPPATH . 'Config/' . ENVIRONMENT . '/Routes.php';
 }
+
+
+/*
+ *  Notes
+ *
+ */
+
+$routes->get('note', 'Note::index');
+$routes->post('note', 'Note::store');
+$routes->get('note/(:num)', 'Note::show/$1');
+$routes->post('note/(:num)', 'Note::update/$1');
+$routes->delete('note/(:num)', 'Note::destroy/$1');
+
+/*
+ *
+ *
+ */

@@ -76,7 +76,7 @@ class Auth extends BaseController
     private function getJWTForUser(
         string $emailAddress,
         int    $responseCode = ResponseInterface::HTTP_OK
-    )
+    ): ResponseInterface
     {
         try {
             $model = new UserModel();
