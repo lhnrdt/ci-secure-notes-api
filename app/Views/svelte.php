@@ -11,14 +11,8 @@
     <link rel='stylesheet' href='/build/bundle.css'>
     <title>Svelte Entrypoint</title>
     <base href="/">
-    <style>
-        #app {
-            margin: 50px;
-        }
-    </style>
 </head>
 <body>
-<div id="app"></div>
 <script defer src="/build/main.js"></script>
 
 </body>

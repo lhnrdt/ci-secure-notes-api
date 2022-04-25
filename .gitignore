@@ -131,3 +131,4 @@ nb-configuration.xml
 /.phpunit.*.cache
 
 /.env
+/node_modules/

@@ -32,6 +32,11 @@ class AddUser extends Migration
                 'null' => false,
                 'unique' => true
             ],
+            'picture' => [
+                'type' => 'VARCHAR',
+                'constraint' => '127',
+                'null' => true,
+            ],
             'updated_at' => [
                 'type' => 'datetime',
                 'null' => true,
