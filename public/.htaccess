@@ -28,7 +28,7 @@ Options All -Indexes
 
 	# Checks to see if the user is attempting to access a valid file,
 	# such as an image or css document, if this isn't true it sends the
-	# request to the front controller, index.php
+	# request to the front controller, welcome_message.php
 	RewriteCond %{REQUEST_FILENAME} !-f
 	RewriteCond %{REQUEST_FILENAME} !-d
 	RewriteRule ^([\s\S]*)$ index.php/$1 [L,NC,QSA]
@@ -40,7 +40,7 @@ Options All -Indexes
 
 <IfModule !mod_rewrite.c>
 	# If we don't have mod_rewrite installed, all 404's
-	# can be sent to index.php, and everything works as normal.
+	# can be sent to welcome_message.php, and everything works as normal.
 	ErrorDocument 404 index.php
 </IfModule>
 

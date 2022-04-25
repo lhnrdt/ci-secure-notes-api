@@ -20,7 +20,9 @@ $routes->setDefaultNamespace('App\Controllers');
 $routes->setDefaultController('Home');
 $routes->setDefaultMethod('index');
 $routes->setTranslateURIDashes(false);
-$routes->set404Override();
+$routes->set404Override(function () {
+    echo view('svelte.php');
+});
 $routes->setAutoRoute(true);
 
 /*
@@ -49,7 +51,6 @@ $routes->get('/', 'Home::index');
 if (file_exists(APPPATH . 'Config/' . ENVIRONMENT . '/Routes.php')) {
     require APPPATH . 'Config/' . ENVIRONMENT . '/Routes.php';
 }
-
 
 /*
  *  Notes
