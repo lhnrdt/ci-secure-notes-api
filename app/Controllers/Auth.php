@@ -69,8 +69,34 @@ class Auth extends BaseController
                 );
         }
         return $this->getJWTForUser($input['email']);
+    }
 
-
+    /**
+     * @throws Exception
+     */
+    public function refreshToken(): ResponseInterface
+    {
+        $authenticationHeader = $this->request->getServer('HTTP_AUTHORIZATION');
+        try {
+            helper('jwt');
+            $encodedToken = getJWTFromRequest($authenticationHeader);
+            $newAccessToken = validateRefreshJWTFromRequest($encodedToken);
+            return $this
+                ->getResponse(
+                    [
+                        'message' => 'New Access Token Issued',
+                        'access_token' => $newAccessToken,
+                    ]
+                );
+        } catch (Exception $exception) {
+            return $this
+                ->getResponse(
+                    [
+                        'error' => $exception->getMessage(),
+                    ],
+                    ResponseInterface::HTTP_BAD_REQUEST
+                );
+        }
     }
 
     private function getJWTForUser(
@@ -81,7 +107,6 @@ class Auth extends BaseController
         try {
             $model = new UserModel();
             $user = $model->findUserByEmailAddress($emailAddress);
-            unset($user['password']);
 
             helper('jwt');
 
@@ -89,8 +114,8 @@ class Auth extends BaseController
                 ->getResponse(
                     [
                         'message' => 'User authenticated successfully',
-                        'user' => $user,
-                        'access_token' => getSignedJWTForUser($emailAddress)
+                        'access_token' => getSignedAccessJWTForUser($user),
+                        'refresh_token' => getSignedRefreshJWTForUser($user)
                     ],
                     $responseCode
                 );

@@ -17,21 +17,44 @@ function getJWTFromRequest($authenticationHeader): string
 /**
  * @throws Exception
  */
-function validateJWTFromRequest(string $encodedToken)
+function validateAccessJWTFromRequest(string $encodedToken)
 {
     $key = Services::getSecretKey();
     $decodedToken = JWT::decode($encodedToken, new Key($key, 'HS256'));
-    $userModel = new UserModel();
-    return $userModel->findUserByEmailAddress($decodedToken->email);
+    if ($decodedToken->type !== 'access') {
+        throw new Exception('invalid token type');
+    }
 }
 
-function getSignedJWTForUser(string $email): string
+/**
+ * @throws Exception
+ */
+function validateRefreshJWTFromRequest(string $encodedToken): string
+{
+    $key = Services::getSecretKey();
+    $decodedToken = JWT::decode($encodedToken, new Key($key, 'HS256'));
+
+    if ($decodedToken->type !== 'refresh') {
+        throw new Exception('invalid token type');
+    }
+    $model = new UserModel();
+    $user = $model->find($decodedToken->userId);
+
+    if ($user['password'] !== $decodedToken->key) {
+        throw new Exception('password changed');
+    }
+
+    return getSignedAccessJWTForUser($user);
+}
+
+function getSignedAccessJWTForUser(array $user): string
 {
     $issuedAtTime = time();
-    $tokenTimeToLive = getenv('JWT_TIME_TO_LIVE');
+    $tokenTimeToLive = getenv('JWT_ACCESS_TIME_TO_LIVE');
     $tokenExpiration = $issuedAtTime + $tokenTimeToLive;
     $payload = [
-        'email' => $email,
+        'type' => 'access',
+        'userId' => $user['id'],
         'iat' => $issuedAtTime,
         'exp' => $tokenExpiration,
     ];
@@ -39,11 +62,29 @@ function getSignedJWTForUser(string $email): string
     return JWT::encode($payload, Services::getSecretKey(), 'HS256');
 }
 
+function getSignedRefreshJWTForUser(array $user): string
+{
+    $issuedAtTime = time();
+    $tokenTimeToLive = getenv('JWT_REFRESH_TIME_TO_LIVE');
+    $tokenExpiration = $issuedAtTime + $tokenTimeToLive;
+
+    $payload = [
+        'type' => 'refresh',
+        'userId' => $user['id'],
+        'key' => $user['password'],
+        'iat' => $issuedAtTime,
+        'exp' => $tokenExpiration,
+    ];
+
+    return JWT::encode($payload, Services::getSecretKey(), 'HS256');
+}
+
+
 /**
  * @throws Exception
  */
 function getUserID($authenticationHeader) {
     $encodedToken = getJWTFromRequest($authenticationHeader);
-    $decodedToken = validateJWTFromRequest($encodedToken);
+    $decodedToken = validateAccessJWTFromRequest($encodedToken);
     return $decodedToken['id'];
 }

@@ -41,9 +41,10 @@ class UserModel extends Model
 
     private function getDataWithHashedPassword($data): array
     {
-        if (isset($data['data']['password'])) {
+        if (isset($data['data']['email']) && isset($data['data']['password'])) {
+            $plaintextEmail = $data['data']['email'];
             $plaintextPassword = $data['data']['password'];
-            $data['data']['password'] = $this->hashPassword($plaintextPassword);
+            $data['data']['password'] = $this->hashPassword($plaintextEmail.$plaintextPassword);
         }
         return $data;
     }
