@@ -28,11 +28,21 @@ class NoteModel extends Model
     {
         $note = $this
             ->asArray()
+            ->join('category', 'note.category_id = category.id')
             ->where(['id' => $id])
             ->first();
 
         if (!$note) throw new Exception('Could not find note for specified ID');
 
         return $note;
+    }
+
+    public function findNotesByUser($user): array
+    {
+        return $this
+            ->asArray()
+            ->join('category', 'note.category_id = category.id')
+            ->where(['user_id' => $user])
+            ->findAll();
     }
 }

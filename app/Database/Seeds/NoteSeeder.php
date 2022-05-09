@@ -24,6 +24,7 @@ class NoteSeeder extends Seeder
         return [
             'title' => $faker->sentence(3, true),
             'content' => $faker->sentence(25, true),
+            'user_id' => 1,
             'category_id' => random_int(0, 9)
         ];
     }

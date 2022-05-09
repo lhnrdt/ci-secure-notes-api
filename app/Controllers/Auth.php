@@ -91,7 +91,8 @@ class Auth extends BaseController
                         'message' => 'User authenticated successfully',
                         'user' => $user,
                         'access_token' => getSignedJWTForUser($emailAddress)
-                    ]
+                    ],
+                    $responseCode
                 );
         } catch (Exception $exception) {
             return $this

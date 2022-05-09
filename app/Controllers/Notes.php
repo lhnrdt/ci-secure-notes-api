@@ -7,17 +7,31 @@ use CodeIgniter\HTTP\ResponseInterface;
 use Exception;
 use ReflectionException;
 
-class Note extends BaseController
+class Notes extends BaseController
 {
     public function index(): ResponseInterface
     {
-        $model = new NoteModel();
-        return $this->getResponse(
-            [
-                'message' => 'Notes retrieved successfully',
-                'notes' => $model->findAll()
-            ]
-        );
+
+        try {
+            helper('jwt');
+            $userID = getUserID($this->request->getServer('HTTP_AUTHORIZATION'));
+            $model = new NoteModel();
+            return $this->getResponse(
+                [
+                    'message' => 'User\'s notes retrieved successfully',
+                    'note' =>  $model->findNotesByUser($userID)
+                ]
+            );
+        } catch (Exception $e) {
+            return $this->getResponse(
+                [
+                    'message' => $e->getMessage(),
+                ],
+                ResponseInterface::HTTP_BAD_REQUEST
+            );
+        }
+
+
     }
 
     /**
@@ -44,7 +58,7 @@ class Note extends BaseController
         return $this
             ->getResponse(
                 [
-                    'message' => 'Note added successfully',
+                    'message' => 'Notes added successfully',
                 ]
             );
 
@@ -59,7 +73,7 @@ class Note extends BaseController
             return $this
                 ->getResponse(
                     [
-                        'message' => 'Note retrieved successfully',
+                        'message' => 'Notes retrieved successfully',
                         'note' => $note
                     ]
                 );
@@ -76,5 +90,6 @@ class Note extends BaseController
 
         }
     }
+
 
 }

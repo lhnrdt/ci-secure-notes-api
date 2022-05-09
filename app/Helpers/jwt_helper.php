@@ -22,7 +22,7 @@ function validateJWTFromRequest(string $encodedToken)
     $key = Services::getSecretKey();
     $decodedToken = JWT::decode($encodedToken, new Key($key, 'HS256'));
     $userModel = new UserModel();
-    $userModel->findUserByEmailAddress($decodedToken->email);
+    return $userModel->findUserByEmailAddress($decodedToken->email);
 }
 
 function getSignedJWTForUser(string $email): string
@@ -37,4 +37,13 @@ function getSignedJWTForUser(string $email): string
     ];
 
     return JWT::encode($payload, Services::getSecretKey(), 'HS256');
+}
+
+/**
+ * @throws Exception
+ */
+function getUserID($authenticationHeader) {
+    $encodedToken = getJWTFromRequest($authenticationHeader);
+    $decodedToken = validateJWTFromRequest($encodedToken);
+    return $decodedToken['id'];
 }

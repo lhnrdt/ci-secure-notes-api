@@ -57,11 +57,11 @@ if (file_exists(APPPATH . 'Config/' . ENVIRONMENT . '/Routes.php')) {
  *
  */
 
-$routes->get('note', 'Note::index');
-$routes->post('note', 'Note::store');
-$routes->get('note/(:num)', 'Note::show/$1');
-$routes->post('note/(:num)', 'Note::update/$1');
-$routes->delete('note/(:num)', 'Note::destroy/$1');
+$routes->get('api/notes', 'Notes::index');
+$routes->post('api/notes', 'Notes::store');
+$routes->get('api/notes/(:num)', 'Notes::show/$1');
+$routes->post('api/notes/(:num)', 'Notes::update/$1');
+$routes->delete('api/notes/(:num)', 'Notes::destroy/$1');
 
 /*
  *
