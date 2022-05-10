@@ -14,6 +14,5 @@
 </head>
 <body>
 <script defer src="/build/main.js"></script>
-
 </body>
 </html>

@@ -14,8 +14,10 @@ class Notes extends BaseController
 
         try {
             helper('jwt');
-            $userID = getUserID($this->request->getServer('HTTP_AUTHORIZATION'));
+            $encodedToken = getJWTFromRequest($this->request->getServer('HTTP_AUTHORIZATION'));
+            $userID = validateAccessJWTFromRequest($encodedToken);
             $model = new NoteModel();
+
             return $this->getResponse(
                 [
                     'message' => 'User\'s notes retrieved successfully',

@@ -24,6 +24,6 @@
     "sirv-cli": "^2.0.0",
     "svelte-bootstrap-icons": "^1.8.1",
     "svelte-navigator": "^3.1.5",
-    "sveltestrap": "^5.9.0"
+    "svelte-toasts": "^1.1.2"
   }
 }

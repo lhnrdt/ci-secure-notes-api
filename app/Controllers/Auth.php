@@ -76,10 +76,10 @@ class Auth extends BaseController
      */
     public function refreshToken(): ResponseInterface
     {
-        $authenticationHeader = $this->request->getServer('HTTP_AUTHORIZATION');
         try {
             helper('jwt');
-            $encodedToken = getJWTFromRequest($authenticationHeader);
+            helper('cookie');
+            $encodedToken = get_cookie('refresh_token');
             $newAccessToken = validateRefreshJWTFromRequest($encodedToken);
             return $this
                 ->getResponse(
@@ -109,13 +109,23 @@ class Auth extends BaseController
             $user = $model->findUserByEmailAddress($emailAddress);
 
             helper('jwt');
+            helper('cookie');
+
+            set_cookie('refresh_token',
+                getSignedRefreshJWTForUser($user),
+                '',
+                '',
+                '/',
+                '',
+                false,
+                true
+            );
 
             return $this
                 ->getResponse(
                     [
                         'message' => 'User authenticated successfully',
                         'access_token' => getSignedAccessJWTForUser($user),
-                        'refresh_token' => getSignedRefreshJWTForUser($user)
                     ],
                     $responseCode
                 );

@@ -17,13 +17,14 @@ function getJWTFromRequest($authenticationHeader): string
 /**
  * @throws Exception
  */
-function validateAccessJWTFromRequest(string $encodedToken)
+function validateAccessJWTFromRequest(string $encodedToken): string
 {
     $key = Services::getSecretKey();
     $decodedToken = JWT::decode($encodedToken, new Key($key, 'HS256'));
     if ($decodedToken->type !== 'access') {
         throw new Exception('invalid token type');
     }
+    return $decodedToken->userId;
 }
 
 /**
@@ -83,7 +84,8 @@ function getSignedRefreshJWTForUser(array $user): string
 /**
  * @throws Exception
  */
-function getUserID($authenticationHeader) {
+function getUserID($authenticationHeader)
+{
     $encodedToken = getJWTFromRequest($authenticationHeader);
     $decodedToken = validateAccessJWTFromRequest($encodedToken);
     return $decodedToken['id'];

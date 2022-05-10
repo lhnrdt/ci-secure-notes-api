@@ -4,14 +4,13 @@
     import {Router, Link, Route} from "svelte-navigator";
     import Header from "./components/Navbar.svelte";
     import Register from "./routes/Register.svelte";
-    import Toast from "./components/Toast.svelte";
     import Login from "./routes/Login.svelte";
+    import {BootstrapToast, ToastContainer} from "svelte-toasts";
 
 </script>
 
 <main>
     <Router>
-
         <Route path="/">
             <Header></Header>
             <Home/>
@@ -23,6 +22,8 @@
             <Login/>
         </Route>
     </Router>
-    <Toast/>
+    <ToastContainer placement="bottom-right" let:data={data}>
+        <BootstrapToast {data} />
+    </ToastContainer>
 </main>
 

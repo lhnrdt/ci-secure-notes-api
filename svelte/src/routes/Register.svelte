@@ -13,11 +13,11 @@
     <h1 class="h3 mb-3 font-weight-normal">Registrieren</h1>
     <label for="inputUsername" class="sr-only">Email Adresse</label>
     <input type="text" id="inputUsername" name="username" class="form-control"
-           placeholder="Username" required autofocus>
+           placeholder="Username" required>
 
     <label for="inputEmail" class="sr-only">Passwort</label>
     <input type="email" id="inputEmail" name="email" class="form-control"
-           placeholder="Email Adresse" required autofocus>
+           placeholder="Email Adresse" required>
 
     <label for="inputPassword" class="sr-only">Passwort</label>
     <input type="password" id="inputPassword" name="password" class="form-control"
