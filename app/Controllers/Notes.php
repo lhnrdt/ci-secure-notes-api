@@ -41,7 +41,12 @@ class Notes extends BaseController
      */
     public function store(): ResponseInterface
     {
-        $rules = [];
+        $rules = [
+            'title' => 'max_length[100]',
+            'content' => 'max_length[1024]',
+            'user_id' => 'required',
+            'category_id' => 'required',
+        ];
 
         $input = $this->getRequestInput($this->request);
 
@@ -49,7 +54,7 @@ class Notes extends BaseController
         if (!$this->validateRequest($input, $rules)) {
             return $this
                 ->getResponse(
-                    $this->validator->getErrors(),
+                    $input,
                     ResponseInterface::HTTP_BAD_REQUEST
                 );
         }

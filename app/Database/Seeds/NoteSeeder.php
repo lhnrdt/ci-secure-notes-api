@@ -8,24 +8,27 @@ use Faker\Factory;
 
 class NoteSeeder extends Seeder
 {
+    /**
+     * @throws Exception
+     */
     public function run()
     {
-        for ($i = 0; $i < 10; $i++) {
-            $this->db->table('note')->insert($this->generateNote());
+        for ($i = 0; $i < 35; $i++) {
+            $this->db->table('note')->insert($this->generateNote($i));
         }
     }
 
     /**
      * @throws Exception
      */
-    private function generateNote(): array
+    private function generateNote($rank): array
     {
         $faker = Factory::create();
         return [
-            'title' => $faker->sentence(3, true),
-            'content' => $faker->sentence(25, true),
+            'title' => $faker->sentence(3),
+            'content' => $rank.' '.$faker->sentence(random_int(25, 55)),
             'user_id' => 1,
-            'category_id' => random_int(0, 9)
+            'category_id' => random_int(1, 10)
         ];
     }
 }

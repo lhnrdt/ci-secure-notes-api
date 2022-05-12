@@ -14,7 +14,7 @@ class NoteModel extends Model
     protected $returnType = 'array';
     protected $useAutoIncrement = true;
 
-    protected $allowedFields = ['title', 'content'];
+    protected $allowedFields = ['title', 'content', 'user_id', 'category_id'];
 
     protected $useTimestamps = true;
     protected $updatedField = 'updated_at';
@@ -28,7 +28,6 @@ class NoteModel extends Model
     {
         $note = $this
             ->asArray()
-            ->join('category', 'note.category_id = category.id')
             ->where(['id' => $id])
             ->first();
 
@@ -37,12 +36,19 @@ class NoteModel extends Model
         return $note;
     }
 
+    /**
+     * @throws Exception
+     */
     public function findNotesByUser($user): array
     {
-        return $this
+        $note = $this
             ->asArray()
-            ->join('category', 'note.category_id = category.id')
+            ->orderBy('created_at', 'ASC')
             ->where(['user_id' => $user])
             ->findAll();
+
+        if (!$note) throw new Exception('Could not find note for specified ID');
+
+        return $note;
     }
 }

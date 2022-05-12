@@ -4,33 +4,48 @@ import {navigate} from "svelte-navigator";
 import {toasts} from "svelte-toasts";
 
 function createDataService() {
-    function getUserNotes() {
-        return fetch('/api/notes', {headers: authHeader()})
-            .then(async res => {
+    async function getResource(url) {
+        const response = await fetch(url, {headers: authHeader()});
 
-                // if access token is valid
-                if (res.status === 200) {
-                    return await res.json();
-                }
+        // access token is valid
+        if (response.status === 200) {
+            return await response.json();
+        }
 
-                // if access token is expired
-                if (res.status === 401) {
-                    try {
-                        await AuthService.renewAccessToken();
-                        return await getUserNotes();
-                    } catch (e) {
-                        // if refresh token is expired
-                        toasts.error("Login expired, please login again.");
-                        navigate('/login');
-                    }
-                }
+        // access token is expired
+        if (response.status === 401) {
+            return await refreshToken(() => getResource(url))
+        }
+    }
 
-            });
+    async function postResource(url, formData) {
+        const response = await fetch(url, {
+            method: 'post',
+            headers: authHeader(),
+            body: formData
+        })
+
+        if (response.status === 401) {
+            await refreshToken(() => postResource(url, formData));
+        }
+    }
+
+    async function refreshToken(callback) {
+        try {
+            await AuthService.renewAccessToken();
+            return await callback();
+        } catch (e) {
+            // refresh token is expired
+            console.trace(e.message)
+            toasts.error("Login expired, please login again.");
+            navigate('/login');
+        }
     }
 
 
     return {
-        getUserNotes
+        getResource: getResource,
+        postResource: postResource
     }
 }
 

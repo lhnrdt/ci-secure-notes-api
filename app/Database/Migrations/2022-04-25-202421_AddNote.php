@@ -12,7 +12,6 @@ class AddNote extends Migration
         $this->forge->addField([
             'id' => [
                 'type' => 'INT',
-                'constraint' => 5,
                 'unsigned' => true,
                 'auto_increment' => true,
             ],
@@ -23,7 +22,7 @@ class AddNote extends Migration
             ],
             'content' => [
                 'type' => 'VARCHAR',
-                'constraint' => '100',
+                'constraint' => '1024',
                 'null' => false
             ],
             'user_id' => [
