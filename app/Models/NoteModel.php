@@ -4,6 +4,7 @@ namespace App\Models;
 
 use CodeIgniter\Model;
 use Exception;
+use phpDocumentor\Reflection\Types\Null_;
 
 class NoteModel extends Model
 {
@@ -39,13 +40,13 @@ class NoteModel extends Model
     /**
      * @throws Exception
      */
-    public function findNotesByUser($user): array
+    public function findNotesByUser($user, ?int $limit = 0, ?int $offset = 0): array
     {
-        $note = $this
-            ->asArray()
-            ->orderBy('created_at', 'ASC')
-            ->where(['user_id' => $user])
-            ->findAll();
+        $this->asArray()
+            ->orderBy('id', 'ASC')
+            ->where(['user_id' => $user]);
+
+        $note = $this->findAll($limit, $offset);
 
         if (!$note) throw new Exception('Could not find note for specified ID');
 

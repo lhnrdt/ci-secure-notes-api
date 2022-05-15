@@ -121,11 +121,14 @@ class Auth extends BaseController
                 true
             );
 
+            unset($user["password"]);
+
             return $this
                 ->getResponse(
                     [
                         'message' => 'User authenticated successfully',
                         'access_token' => getSignedAccessJWTForUser($user),
+                        'user' => $user
                     ],
                     $responseCode
                 );

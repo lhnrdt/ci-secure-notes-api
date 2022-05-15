@@ -18,23 +18,28 @@ class Notes extends BaseController
             $userID = validateAccessJWTFromRequest($encodedToken);
             $model = new NoteModel();
 
+            $limit = $_GET['limit'] ?? 0;
+            $offset = $_GET['offset'] ?? 0;
+
             return $this->getResponse(
                 [
                     'message' => 'User\'s notes retrieved successfully',
-                    'note' =>  $model->findNotesByUser($userID)
+                    'note' => $model->findNotesByUser($userID, $limit, $offset)
                 ]
             );
         } catch (Exception $e) {
             return $this->getResponse(
                 [
                     'message' => $e->getMessage(),
+                    'note' => []
                 ],
-                ResponseInterface::HTTP_BAD_REQUEST
+                ResponseInterface::HTTP_NOT_FOUND
             );
         }
 
 
     }
+
 
     /**
      * @throws ReflectionException
@@ -66,6 +71,7 @@ class Notes extends BaseController
             ->getResponse(
                 [
                     'message' => 'Notes added successfully',
+                    'notes' => $input
                 ]
             );
 

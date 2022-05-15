@@ -5,18 +5,29 @@
     import Note from "../components/Note.svelte";
     import {MasonryGrid} from "@egjs/svelte-grid";
     import {clickOutside} from "./clickOutside";
+    import InfiniteScroll from "../components/InfiniteScroll.svelte";
+
+    let offset = 0;
+    const limit = 20;
 
     let notes = [];
-    let newNoteOpen = false;
+    let newNotesBatch = [];
 
-    function loadNotes() {
-        return async () => {
-            const notesRes = await DataService.getResource('/api/notes');
-            notes = await notesRes['note'];
-        };
+    $: notes = [
+        ...notes,
+        ...newNotesBatch
+    ];
+
+
+    async function fetchData() {
+        const data = await DataService.getResource(`/api/notes?offset=${offset}&limit=${limit}`);
+        newNotesBatch = data['note'];
     }
 
-    onMount(loadNotes())
+    let newNoteOpen = false;
+    onMount(() => {
+        fetchData();
+    })
 
     const openNewNote = () => {
         newNoteOpen = true;
@@ -26,15 +37,15 @@
         newNoteOpen = false;
     };
 
-    const saveNewNote = () => {
+    const saveNewNote = async () => {
 
         const formData = new FormData(document.getElementById('newNote'));
+        const user = JSON.parse(localStorage.getItem('user'));
 
         if (!!formData.get('title') || !!formData.get('content')) {
-            // @Todo: get actual userId
-            formData.append('user_id', '1');
+            formData.append('user_id', user.id);
             formData.append('category_id', '1');
-            DataService.postResource('/api/notes', formData);
+            await DataService.postResource('/api/notes', formData);
         }
 
         closeNewNote();
@@ -42,11 +53,11 @@
 
 </script>
 
-<main class="container-fluid mt-2">
+<main class="container-fluid mt-5">
 
     <div class="row justify-content-center">
         <div class="col-6 mb-3">
-            <div use:clickOutside on:click_outside={saveNewNote} data-open={newNoteOpen}
+            <div use:clickOutside  data-open={newNoteOpen}
                  class="card border-1 shadow-sm">
                 <div class="card-body">
                     <form id="newNote">
@@ -72,18 +83,25 @@
 
     <div class="row justify-content-center">
         <div class="col">
-            <MasonryGrid class="m-container" align="center" gap={10}>
-                {#each notes as note}
-                    <Note note={note}/>
-                {:else}
-                    <p>No notes found.</p>
-                {/each}
-            </MasonryGrid>
+                <MasonryGrid class="m-container" align="center" gap={10} id="test">
+                    {#each notes as note}
+                        <Note note={note}/>
+                    {:else}
+                        <p>No notes found.</p>
+                    {/each}
+                </MasonryGrid>
+                <InfiniteScroll
+                        hasMore={newNotesBatch.length}
+                        threshold={100}
+                        on:loadMore={() => {offset += limit; fetchData()}} />
         </div>
     </div>
 </main>
 
 
 <style>
-
+    .scroll-container {
+        overflow-x: scroll;
+        height: 90vh;
+    }
 </style>

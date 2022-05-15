@@ -2,47 +2,50 @@ import {toasts} from "svelte-toasts";
 import {navigate} from "svelte-navigator";
 
 function createAuthService() {
-    function login(formData) {
-        return fetch('/auth/login', {
+    async function login(formData) {
+        const res = await fetch('/auth/login', {
             method: 'POST',
             body: formData
-        }).then(async res => {
-            if (res.status === 200) {
-                toasts.success("Login successful.");
-                let resJSON = await res.json();
-                localStorage.setItem('access_token', resJSON["access_token"]);
-                navigate('/');
-            }
-            if (res.status === 400) {
-                toasts.error("Invalid Login credentials");
-            }
-        })
+        });
+
+        try {
+            await processAuthResponse(res);
+            toasts.success("Login successful.");
+        } catch (e) {
+            toasts.error(e.message);
+        }
+    }
+
+    async function register(formData) {
+        const res = await fetch('/auth/register', {
+            method: 'POST',
+            body: formData
+        });
+
+        try {
+            await processAuthResponse(res);
+            toasts.success("Login successful.");
+        } catch (e) {
+            toasts.error(e.message);
+        }
+    }
+
+    async function processAuthResponse(response) {
+        if (response.status === 201 || response.status === 200) {
+            let resJSON = await response.json();
+            localStorage.setItem('access_token', resJSON["access_token"]);
+            localStorage.setItem('user', JSON.stringify(resJSON["user"]));
+            navigate('/');
+        }
+        if (response.status === 400) {
+            throw new Error('Invalid Login Credentials');
+        }
     }
 
     function logout() {
         localStorage.removeItem('access_token');
-    }
-
-    async function register(formData) {
-
-        return fetch('/auth/register', {
-            method: 'POST',
-            body: formData
-        }).then(res => {
-            if (res.status === 201) {
-                toasts.success("Registered successfully.");
-                let resJSON = res.json();
-                localStorage.setItem('access_token', resJSON["access_token"]);
-                navigate('/');
-            }
-            if (res.status === 400) {
-                toasts.error("Something went wrong");
-            }
-            return res
-        })
-            .catch((error) => {
-                console.error(error);
-            });
+        localStorage.removeItem('user');
+        navigate('/login');
     }
 
     async function renewAccessToken() {

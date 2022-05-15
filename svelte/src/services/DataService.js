@@ -8,7 +8,7 @@ function createDataService() {
         const response = await fetch(url, {headers: authHeader()});
 
         // access token is valid
-        if (response.status === 200) {
+        if (response.status === 200 || response.status === 404) {
             return await response.json();
         }
 
@@ -25,8 +25,14 @@ function createDataService() {
             body: formData
         })
 
+
         if (response.status === 401) {
             await refreshToken(() => postResource(url, formData));
+        }
+
+        if (response.status === 200) {
+            let responseJSON = await response.json();
+            toasts.success(responseJSON.message);
         }
     }
 
@@ -41,6 +47,7 @@ function createDataService() {
             navigate('/login');
         }
     }
+
 
 
     return {

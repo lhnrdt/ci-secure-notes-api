@@ -12,7 +12,7 @@
 <main>
     <Router>
         <Route path="/">
-            <Header></Header>
+            <Header />
             <Home/>
         </Route>
         <Route path="/register">
