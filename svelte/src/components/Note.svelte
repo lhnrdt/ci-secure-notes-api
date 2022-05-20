@@ -1,9 +1,12 @@
 <script>
+    import {createEventDispatcher} from "svelte";
+
     export let note;
+    const dispatch = createEventDispatcher();
 
 </script>
 
-<div class="card note">
+<div class="card note" on:click={() => dispatch('clickedNote', {note: note})}>
     <div class="card-body">
         {#if (note.title)}
             <h5 class="card-title">

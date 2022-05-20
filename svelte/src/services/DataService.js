@@ -36,23 +36,55 @@ function createDataService() {
         }
     }
 
+    async function deleteResource(url) {
+        const response = await fetch(url, {
+            method: 'delete',
+            headers: authHeader()
+        })
+
+        if (response.status === 400) {
+            await refreshToken(() => postResource(url));
+        }
+
+        if (response.status === 200) {
+            let responseJSON = await response.json();
+            toasts.success(responseJSON.message);
+        }
+    }
+
     async function refreshToken(callback) {
         try {
             await AuthService.renewAccessToken();
             return await callback();
         } catch (e) {
             // refresh token is expired
-            console.trace(e.message)
             toasts.error("Login expired, please login again.");
             navigate('/login');
         }
     }
 
+    async function createNote(formData) {
+        const user = JSON.parse(localStorage.getItem('user'));
+        formData.append('user_id', user.id);
+        formData.append('category_id', '1');
+        await DataService.postResource('/api/notes', formData);
+        toasts.success("created")
+    }
+
+    async function updateNote() {
+
+    }
+
+    async function deleteNote(id) {
+        await deleteResource(`/api/notes/${id}`)
+    }
 
 
     return {
-        getResource: getResource,
-        postResource: postResource
+        getResource,
+        postResource,
+        createNote,
+        deleteNote
     }
 }
 

@@ -104,5 +104,31 @@ class Notes extends BaseController
         }
     }
 
+    public function destroy($id): ResponseInterface
+    {
+        try {
+            helper('jwt');
+            $encodedToken = getJWTFromRequest($this->request->getServer('HTTP_AUTHORIZATION'));
+            $userID = validateAccessJWTFromRequest($encodedToken);
+
+            $model = new NoteModel();
+            $model->deleteUserNote($userID, $id);
+
+            return $this->getResponse(
+                [
+                    'message' => 'Note deleted',
+                ]
+            );
+        } catch (Exception $e) {
+            return $this
+                ->getResponse(
+                    [
+                        'message' => $e->getMessage()
+                    ],
+                    ResponseInterface::HTTP_BAD_REQUEST
+                );
+        }
+    }
+
 
 }

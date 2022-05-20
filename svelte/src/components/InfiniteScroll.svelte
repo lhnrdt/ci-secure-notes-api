@@ -10,7 +10,6 @@
     $: {
         document.addEventListener("scroll", onScroll);
         document.addEventListener("resize", onScroll);
-
     }
 
     const onScroll = e => {

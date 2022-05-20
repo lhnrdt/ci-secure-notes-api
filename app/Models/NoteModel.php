@@ -52,4 +52,14 @@ class NoteModel extends Model
 
         return $note;
     }
+
+    /**
+     * @throws Exception
+     */
+    public function deleteUserNote($userId, $noteId)
+    {
+        $note = $this->findNoteById($noteId);
+        if ($note['user_id'] != $userId) throw new Exception('This note does not belong to the user.');
+        else $this->delete($noteId);
+    }
 }
