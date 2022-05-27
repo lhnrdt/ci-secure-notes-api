@@ -9,22 +9,24 @@
 
 </script>
 
-<form on:submit|preventDefault={handleLogin} class="form-signin text-center">
-    <h1 class="h3 mb-3 font-weight-normal">Login</h1>
+<main>
+    <form on:submit|preventDefault={handleLogin} class="form-signin text-center">
+        <h1 class="h3 mb-3 font-weight-normal">Login</h1>
 
-    <label for="inputEmail" class="sr-only">Passwort</label>
-    <input type="email" id="inputEmail" name="email" class="form-control"
-           placeholder="Email Adresse" required>
+        <label for="inputEmail" class="sr-only">Passwort</label>
+        <input type="email" id="inputEmail" name="email" class="form-control"
+               placeholder="Email Adresse" required>
 
-    <label for="inputPassword" class="sr-only">Passwort</label>
-    <input type="password" id="inputPassword" name="password" class="form-control"
-           placeholder="Passwort" required>
-    <button class="btn btn-lg btn-primary btn-block" type="submit">Login</button>
-    <p class="mt-1">
-        <a href="/register" use:link>Register</a>
-    </p>
-    <p class="mt-5 mb-3 text-muted">&copy; 2022</p>
-</form>
+        <label for="inputPassword" class="sr-only">Passwort</label>
+        <input type="password" id="inputPassword" name="password" class="form-control"
+               placeholder="Passwort" required>
+        <button class="btn btn-lg btn-primary btn-block" type="submit">Login</button>
+        <p class="mt-1">
+            <a href="/register" use:link>Register</a>
+        </p>
+        <p class="mt-5 mb-3 text-muted">&copy; 2022</p>
+    </form>
+</main>
 
 <style>
     form {

@@ -5,6 +5,7 @@ namespace App\Controllers;
 use App\Models\NoteModel;
 use CodeIgniter\HTTP\ResponseInterface;
 use Exception;
+use phpDocumentor\Reflection\Types\This;
 use ReflectionException;
 
 class Notes extends BaseController
@@ -50,7 +51,6 @@ class Notes extends BaseController
             'title' => 'max_length[100]',
             'content' => 'max_length[1024]',
             'user_id' => 'required',
-            'category_id' => 'required',
         ];
 
         $input = $this->getRequestInput($this->request);
@@ -59,7 +59,9 @@ class Notes extends BaseController
         if (!$this->validateRequest($input, $rules)) {
             return $this
                 ->getResponse(
-                    $input,
+                    [
+                        'message' => 'Validation failed'
+                    ],
                     ResponseInterface::HTTP_BAD_REQUEST
                 );
         }
@@ -109,16 +111,67 @@ class Notes extends BaseController
         try {
             helper('jwt');
             $encodedToken = getJWTFromRequest($this->request->getServer('HTTP_AUTHORIZATION'));
-            $userID = validateAccessJWTFromRequest($encodedToken);
+            $userId = validateAccessJWTFromRequest($encodedToken);
 
             $model = new NoteModel();
-            $model->deleteUserNote($userID, $id);
+            $note = $model->findNoteById($id);
+
+            if (!$model->checkOwnership($note, $userId)) $model->delete($id);
 
             return $this->getResponse(
                 [
                     'message' => 'Note deleted',
                 ]
             );
+        } catch (Exception $e) {
+            return $this
+                ->getResponse(
+                    [
+                        'message' => $e->getMessage()
+                    ],
+                    ResponseInterface::HTTP_BAD_REQUEST
+                );
+        }
+    }
+
+    public function update($id): ResponseInterface
+    {
+        $rules = [
+            'title' => 'max_length[100]',
+            'content' => 'max_length[1024]',
+            'user_id' => 'required',
+        ];
+
+        $input = $this->getRequestInput($this->request);
+
+        if (!$this->validateRequest($input, $rules)) {
+            return $this
+                ->getResponse(
+                    [
+                        'message' => 'Validation failed'
+                    ],
+                    ResponseInterface::HTTP_BAD_REQUEST
+                );
+        }
+
+        try {
+            helper('jwt');
+            $encodedToken = getJWTFromRequest($this->request->getServer('HTTP_AUTHORIZATION'));
+            $userId = validateAccessJWTFromRequest($encodedToken);
+
+            $model = new NoteModel();
+            $note = $model->findNoteById($id);
+
+            $model->checkOwnership($note, $userId);
+            $model->update($id, $input);
+
+            return $this->getResponse(
+                [
+                    'message' => 'Note updated',
+                    'note' => $model->findNoteById($id)
+                ]
+            );
+
         } catch (Exception $e) {
             return $this
                 ->getResponse(

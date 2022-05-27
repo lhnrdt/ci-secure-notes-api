@@ -33,6 +33,7 @@ function createDataService() {
         if (response.status === 200) {
             let responseJSON = await response.json();
             toasts.success(responseJSON.message);
+            return responseJSON;
         }
     }
 
@@ -71,8 +72,8 @@ function createDataService() {
         toasts.success("created")
     }
 
-    async function updateNote() {
-
+    async function updateNote(id, formData) {
+        return await postResource(`/api/notes/${id}`, formData)
     }
 
     async function deleteNote(id) {
@@ -84,7 +85,8 @@ function createDataService() {
         getResource,
         postResource,
         createNote,
-        deleteNote
+        deleteNote,
+        updateNote
     }
 }
 

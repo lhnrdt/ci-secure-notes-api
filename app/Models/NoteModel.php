@@ -4,7 +4,9 @@ namespace App\Models;
 
 use CodeIgniter\Model;
 use Exception;
+use phpDocumentor\Reflection\Types\Boolean;
 use phpDocumentor\Reflection\Types\Null_;
+use ReflectionException;
 
 class NoteModel extends Model
 {
@@ -29,7 +31,9 @@ class NoteModel extends Model
     {
         $note = $this
             ->asArray()
-            ->where(['id' => $id])
+            ->select('note.*, category.name category_name')
+            ->join('category', 'category.id = note.category_id', 'left')
+            ->where(['note.id' => $id])
             ->first();
 
         if (!$note) throw new Exception('Could not find note for specified ID');
@@ -43,7 +47,9 @@ class NoteModel extends Model
     public function findNotesByUser($user, ?int $limit = 0, ?int $offset = 0): array
     {
         $this->asArray()
+            ->select('note.*, category.name category_name')
             ->orderBy('id', 'ASC')
+            ->join('category', 'category.id = note.category_id', 'left')
             ->where(['user_id' => $user]);
 
         $note = $this->findAll($limit, $offset);
@@ -53,13 +59,12 @@ class NoteModel extends Model
         return $note;
     }
 
+
     /**
      * @throws Exception
      */
-    public function deleteUserNote($userId, $noteId)
+    public function checkOwnership($note, $userId)
     {
-        $note = $this->findNoteById($noteId);
         if ($note['user_id'] != $userId) throw new Exception('This note does not belong to the user.');
-        else $this->delete($noteId);
     }
 }

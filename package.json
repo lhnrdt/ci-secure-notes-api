@@ -24,6 +24,8 @@
     "bootstrap-icons": "^1.8.1",
     "sirv-cli": "^2.0.0",
     "svelte-bootstrap-icons": "^1.8.1",
+    "svelte-bricks": "^0.1.7",
+    "svelte-masonry-layout": "^0.0.7",
     "svelte-navigator": "^3.1.5",
     "svelte-toasts": "^1.1.2"
   }

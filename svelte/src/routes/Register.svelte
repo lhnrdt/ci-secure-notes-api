@@ -8,30 +8,32 @@
     }
 
 </script>
+<main>
 
-<form on:submit|preventDefault={handleRegister} class="form-signin text-center">
-    <h1 class="h3 mb-3 font-weight-normal">Registrieren</h1>
-    <label for="inputUsername" class="sr-only">Email Adresse</label>
-    <input type="text" id="inputUsername" name="username" class="form-control"
-           placeholder="Username" required>
+    <form on:submit|preventDefault={handleRegister} class="form-signin text-center">
+        <h1 class="h3 mb-3 font-weight-normal">Registrieren</h1>
+        <label for="inputUsername" class="sr-only">Email Adresse</label>
+        <input type="text" id="inputUsername" name="username" class="form-control"
+               placeholder="Username" required>
 
-    <label for="inputEmail" class="sr-only">Passwort</label>
-    <input type="email" id="inputEmail" name="email" class="form-control"
-           placeholder="Email Adresse" required>
+        <label for="inputEmail" class="sr-only">Passwort</label>
+        <input type="email" id="inputEmail" name="email" class="form-control"
+               placeholder="Email Adresse" required>
 
-    <label for="inputPassword" class="sr-only">Passwort</label>
-    <input type="password" id="inputPassword" name="password" class="form-control"
-           placeholder="Passwort" required>
+        <label for="inputPassword" class="sr-only">Passwort</label>
+        <input type="password" id="inputPassword" name="password" class="form-control"
+               placeholder="Passwort" required>
 
-    <label for="inputPasswordRepeat" class="sr-only">Passwort wiederholen</label>
-    <input type="password" id="inputPasswordRepeat" class="form-control"
-           placeholder="Passwort wiederholen" required>
-    <button class="btn btn-lg btn-primary btn-block" type="submit">Registrieren</button>
-    <p class="mt-1">
-        <a href="/login" use:link>Login</a>
-    </p>
-    <p class="mt-5 mb-3 text-muted">&copy; 2022</p>
-</form>
+        <label for="inputPasswordRepeat" class="sr-only">Passwort wiederholen</label>
+        <input type="password" id="inputPasswordRepeat" class="form-control"
+               placeholder="Passwort wiederholen" required>
+        <button class="btn btn-lg btn-primary btn-block" type="submit">Registrieren</button>
+        <p class="mt-1">
+            <a href="/login" use:link>Login</a>
+        </p>
+        <p class="mt-5 mb-3 text-muted">&copy; 2022</p>
+    </form>
+</main>
 
 <style>
     form {
