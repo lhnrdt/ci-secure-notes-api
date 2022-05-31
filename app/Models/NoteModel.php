@@ -31,7 +31,7 @@ class NoteModel extends Model
     {
         $note = $this
             ->asArray()
-            ->select('note.*, category.name category_name')
+            ->select('note.*, category.name category_name, category.color')
             ->join('category', 'category.id = note.category_id', 'left')
             ->where(['note.id' => $id])
             ->first();
@@ -47,10 +47,10 @@ class NoteModel extends Model
     public function findNotesByUser($user, ?int $limit = 0, ?int $offset = 0): array
     {
         $this->asArray()
-            ->select('note.*, category.name category_name')
-            ->orderBy('id', 'ASC')
+            ->select('note.*, category.name category_name, category.color')
+            ->orderBy('id', 'DESC')
             ->join('category', 'category.id = note.category_id', 'left')
-            ->where(['user_id' => $user]);
+            ->where(['note.user_id' => $user]);
 
         $note = $this->findAll($limit, $offset);
 

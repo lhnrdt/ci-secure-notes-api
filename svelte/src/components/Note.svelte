@@ -9,6 +9,7 @@
 
 <div class="card note h-100"
     on:click={() => dispatch('noteClicked', {note: note})}
+     style:background-color={note.color}
 >
     <div class="card-body">
         {#if (note.title)}

@@ -19,9 +19,21 @@ class AddCategories extends Migration
                 'type' => 'VARCHAR',
                 'constraint' => '100',
                 'null' => false,
+            ],
+            'color' =>  [
+                'type' => 'VARCHAR',
+                'constraint' => '7',
+                'null' => false,
+                'default' => '#ffffff'
+            ],
+            'user_id' => [
+                'type' => 'INT',
+                'constraint' => 5,
+                'unsigned' => true
             ]
         ]);
         $this->forge->addPrimaryKey('id');
+        $this->forge->addForeignKey('user_id', 'users', 'id');
         $this->forge->createTable('category');
     }
 

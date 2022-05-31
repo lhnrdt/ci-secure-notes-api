@@ -23,7 +23,7 @@
         <Login/>
     </Route>
 </Router>
-<ToastContainer placement="bottom-right" let:data={data}>
+<ToastContainer placement="bottom-left" let:data={data}>
     <BootstrapToast {data}/>
 </ToastContainer>
 

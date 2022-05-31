@@ -66,16 +66,27 @@ class Notes extends BaseController
                 );
         }
 
-        $model = new NoteModel();
-        $model->save($input);
+        try {
+            $model = new NoteModel();
+            $model->save($input);
+            $note = $model->findNoteById($model->getInsertID());
+            return $this
+                ->getResponse(
+                    [
+                        'message' => 'Notes added successfully',
+                        'note' => $note
+                    ]
+                );
+        } catch (Exception $e) {
+            return $this
+                ->getResponse(
+                    [
+                        'message' => $e->getMessage()
+                    ],
+                    ResponseInterface::HTTP_BAD_REQUEST
+                );
+        }
 
-        return $this
-            ->getResponse(
-                [
-                    'message' => 'Notes added successfully',
-                    'notes' => $input
-                ]
-            );
 
     }
 
@@ -115,8 +126,8 @@ class Notes extends BaseController
 
             $model = new NoteModel();
             $note = $model->findNoteById($id);
-
-            if (!$model->checkOwnership($note, $userId)) $model->delete($id);
+            $model->checkOwnership($note, $userId);
+            $model->delete($id);
 
             return $this->getResponse(
                 [

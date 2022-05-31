@@ -1,34 +1,39 @@
 <script>
     import {onMount} from "svelte";
     import {DataService} from "../services/DataService";
-    import {noteStore} from "../stores";
+    import {noteStore, categoryStore} from "../stores";
     import Note from "../components/Note.svelte";
     import InfiniteScroll from "../components/InfiniteScroll.svelte";
     import EditModal from "../components/EditModal.svelte";
     import AddButton from "../components/AddButton.svelte";
-    import Sidebar from "../components/Sidebar.svelte";
 
 
     // modal
     let modal;
+
+    const emptyNote = {
+        title: '',
+        content: '',
+    }
 
     // infinite scroll
     const limit = 20;
     let offset = 0;
 
     // data
-    async function fetchData() {
+    async function fetchNoteBatch() {
         const data = await DataService.getResource(`/api/notes?offset=${offset}&limit=${limit}`);
         if (data.note.length) $noteStore = [...$noteStore, ...data.note];
     }
 
-    const saveNewNote = async () => {
-        await DataService.createNote(new FormData(document.getElementById('newNote')))
+    async function fetchCategories() {
+        const res = await DataService.getResource(`/api/categories`);
+        $categoryStore = res.categories;
     }
 
     onMount(() => {
-        fetchData();
-        console.log($noteStore)
+        fetchNoteBatch();
+        fetchCategories();
     })
 
 </script>
@@ -53,11 +58,11 @@
                     {/each}
                     <InfiniteScroll
                             threshold={100}
-                            on:loadMore={() => {offset += limit; fetchData()}}/>
+                            on:loadMore={() => {offset += limit; fetchNoteBatch()}}/>
                 </div>
 
                 <EditModal bind:this={modal}/>
-                <AddButton on:click={() => modal.show({})}/>
+                <AddButton on:click={() => modal.show(emptyNote)}/>
             </div>
 
         </div>

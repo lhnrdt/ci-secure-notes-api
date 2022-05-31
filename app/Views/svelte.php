@@ -9,7 +9,7 @@
     <link rel='icon' type='image/png' href='/favicon.png'>
     <link rel='stylesheet' href='/global.css'>
     <link rel='stylesheet' href='/build/bundle.css'>
-    <title>Svelte Entrypoint</title>
+    <title>Mein Notizen</title>
     <base href="/">
 </head>
 <body>

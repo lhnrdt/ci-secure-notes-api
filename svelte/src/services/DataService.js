@@ -65,11 +65,7 @@ function createDataService() {
     }
 
     async function createNote(formData) {
-        const user = JSON.parse(localStorage.getItem('user'));
-        formData.append('user_id', user.id);
-        formData.append('category_id', '1');
-        await DataService.postResource('/api/notes', formData);
-        toasts.success("created")
+        return await postResource(`/api/notes/`, formData);
     }
 
     async function updateNote(id, formData) {
@@ -79,7 +75,6 @@ function createDataService() {
     async function deleteNote(id) {
         await deleteResource(`/api/notes/${id}`)
     }
-
 
     return {
         getResource,
