@@ -63,6 +63,8 @@ $routes->get('api/notes/(:num)', 'Notes::show/$1');
 $routes->post('api/notes/(:num)', 'Notes::update/$1');
 $routes->delete('api/notes/(:num)', 'Notes::destroy/$1');
 $routes->get('api/categories', 'Categories::index');
+$routes->post('api/categories', 'Categories::store');
+$routes->delete('api/categories/(:num)', 'Categories::destroy/$1');
 
 /*
  *

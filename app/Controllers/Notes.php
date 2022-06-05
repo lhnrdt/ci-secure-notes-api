@@ -53,39 +53,39 @@ class Notes extends BaseController
             'user_id' => 'required',
         ];
 
-        $input = $this->getRequestInput($this->request);
+            $input = $this->getRequestInput($this->request);
 
-        // if it doesn't validate respond with bad request
-        if (!$this->validateRequest($input, $rules)) {
-            return $this
-                ->getResponse(
-                    [
-                        'message' => 'Validation failed'
-                    ],
-                    ResponseInterface::HTTP_BAD_REQUEST
-                );
-        }
+            // if it doesn't validate respond with bad request
+            if (!$this->validateRequest($input, $rules)) {
+                return $this
+                    ->getResponse(
+                        [
+                            'message' => 'Validation failed'
+                        ],
+                        ResponseInterface::HTTP_BAD_REQUEST
+                    );
+            }
 
-        try {
-            $model = new NoteModel();
-            $model->save($input);
-            $note = $model->findNoteById($model->getInsertID());
-            return $this
-                ->getResponse(
-                    [
-                        'message' => 'Notes added successfully',
-                        'note' => $note
-                    ]
-                );
-        } catch (Exception $e) {
-            return $this
-                ->getResponse(
-                    [
-                        'message' => $e->getMessage()
-                    ],
-                    ResponseInterface::HTTP_BAD_REQUEST
-                );
-        }
+            try {
+                $model = new NoteModel();
+                $model->save($input);
+                $note = $model->findNoteById($model->getInsertID());
+                return $this
+                    ->getResponse(
+                        [
+                            'message' => 'Notes added successfully',
+                            'note' => $note
+                        ]
+                    );
+            } catch (Exception $e) {
+                return $this
+                    ->getResponse(
+                        [
+                            'message' => $e->getMessage()
+                        ],
+                        ResponseInterface::HTTP_BAD_REQUEST
+                    );
+            }
 
 
     }
@@ -174,6 +174,9 @@ class Notes extends BaseController
             $note = $model->findNoteById($id);
 
             $model->checkOwnership($note, $userId);
+
+            if (!isset($input['category_id'])) $input['category_id'] = null;
+
             $model->update($id, $input);
 
             return $this->getResponse(

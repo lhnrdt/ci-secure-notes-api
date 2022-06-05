@@ -1,14 +1,18 @@
 <script>
 
     import {createEventDispatcher} from "svelte";
+
     const dispatch = createEventDispatcher();
 
     export let note;
+    let color;
+
+    $: color = note.color ?? '#fffff';
 
 </script>
 
 <div class="card note h-100"
-    on:click={() => dispatch('noteClicked', {note: note})}
+     on:click={() => dispatch('noteClicked', {note: note})}
      style:background-color={note.color}
 >
     <div class="card-body">
@@ -19,9 +23,11 @@
         {/if}
         <p>{note.content}</p>
     </div>
-    <div class="card-footer text-muted">
-        {note['category_name']}
-    </div>
+    {#if (note['category_name'])}
+        <div class="card-footer text-muted">
+            {note['category_name']}
+        </div>
+    {/if}
 </div>
 
 <style>

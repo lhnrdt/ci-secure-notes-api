@@ -1,47 +1,35 @@
 <script>
+    import {categoryStore, selectedCategory} from "../stores";
+    import Category from "./Category.svelte";
+    import CategoryModal from "./CategoryModal.svelte";
+
+    let categoryModal;
+
+    const handleSelectCategory = (category) => {
+        const alreadySelected = $selectedCategory === category;
+        $selectedCategory = alreadySelected ? null : category;
+    };
+
+    const handleAddCategory = async () => {
+        categoryModal.show();
+    };
 
 </script>
 
-<div class="d-flex flex-column flex-shrink-0 p-3 text-white bg-dark" style="width: 280px;">
-    <a href="/" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-white text-decoration-none">
-        <svg class="bi me-2" width="40" height="32"><use xlink:href="#bootstrap"/></svg>
-        <span class="fs-4">Sidebar</span>
-    </a>
-    <hr>
+<div class="d-flex flex-column flex-shrink-0 p-3">
+    <h4>Kategorien</h4>
     <ul class="nav nav-pills flex-column mb-auto">
-        <li class="nav-item">
-            <a href="#" class="nav-link active" aria-current="page">
-                <svg class="bi me-2" width="16" height="16"><use xlink:href="#home"/></svg>
-                Home
-            </a>
-        </li>
-        <li>
-            <a href="#" class="nav-link text-white">
-                <svg class="bi me-2" width="16" height="16"><use xlink:href="#speedometer2"/></svg>
-                Dashboard
-            </a>
-        </li>
-        <li>
-            <a href="#" class="nav-link text-white">
-                <svg class="bi me-2" width="16" height="16"><use xlink:href="#table"/></svg>
-                Orders
-            </a>
-        </li>
-        <li>
-            <a href="#" class="nav-link text-white">
-                <svg class="bi me-2" width="16" height="16"><use xlink:href="#grid"/></svg>
-                Products
-            </a>
-        </li>
-        <li>
-            <a href="#" class="nav-link text-white">
-                <svg class="bi me-2" width="16" height="16"><use xlink:href="#people-circle"/></svg>
-                Customers
-            </a>
-        </li>
+        {#each $categoryStore as category}
+            <Category {category}
+                      clickFunction={handleSelectCategory}
+                      active={(category === $selectedCategory)}
+            />
+        {/each}
     </ul>
-    <hr>
-    <div class="dropdown">
-
-    </div>
+    <button type="button" class="btn btn-secondary mt-2" data-toggle="button" aria-pressed="false"
+        on:click={handleAddCategory}
+    >
+        + Neue Kategorie
+    </button>
+    <CategoryModal bind:this={categoryModal}/>
 </div>

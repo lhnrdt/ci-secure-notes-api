@@ -32,4 +32,75 @@ class Categories extends BaseController
             );
         }
     }
+
+    public function store(): ResponseInterface
+    {
+        $rules = [
+            'name' => 'required|max_length[100]',
+            'color' => 'validate_color',
+            'user_id' => 'required',
+        ];
+
+        $input = $this->getRequestInput($this->request);
+
+        if (!$this->validateRequest($input, $rules)) {
+            return $this
+                ->getResponse(
+                    [
+                        'message' => 'Validation failed'
+                    ],
+                    ResponseInterface::HTTP_BAD_REQUEST
+                );
+        }
+
+        try {
+            $model = new CategoryModel();
+            $model->save($input);
+            $category = $model->findCategoryById($model->getInsertID());
+            return $this
+                ->getResponse(
+                    [
+                        'message' => 'Category added successfully',
+                        'category' => $category
+                    ]
+                );
+        } catch (Exception $e) {
+            return $this
+                ->getResponse(
+                    [
+                        'message' => $e->getMessage()
+                    ],
+                    ResponseInterface::HTTP_BAD_REQUEST
+                );
+        }
+    }
+
+    public function destroy($id): ResponseInterface
+    {
+        try {
+            helper('jwt');
+            $encodedToken = getJWTFromRequest($this->request->getServer('HTTP_AUTHORIZATION'));
+            $userId = validateAccessJWTFromRequest($encodedToken);
+
+            $model = new CategoryModel();
+            $category = $model->findCategoryById($id);
+            $model->checkOwnership($category, $userId);
+            $model->delete($id);
+
+            return $this
+                ->getResponse(
+                    [
+                        'message' => 'Category deleted'
+                    ]
+                );
+        } catch (Exception $e) {
+            return $this
+                ->getResponse(
+                    [
+                        'message' => $e->getMessage()
+                    ],
+                    ResponseInterface::HTTP_BAD_REQUEST
+                );
+        }
+    }
 }

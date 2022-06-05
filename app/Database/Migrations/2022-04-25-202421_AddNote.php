@@ -34,6 +34,7 @@ class AddNote extends Migration
                 'type' => 'INT',
                 'constraint' => 5,
                 'unsigned' => true,
+                'null' => true
             ],
             'updated_at' => [
                 'type' => 'datetime',
@@ -43,7 +44,7 @@ class AddNote extends Migration
         ]);
         $this->forge->addPrimaryKey('id');
         $this->forge->addForeignKey('user_id', 'users', 'id');
-        $this->forge->addForeignKey('category_id', 'category', 'id');
+        $this->forge->addForeignKey('category_id', 'category', 'id', 'CASCADE', 'SET NULL');
         $this->forge->createTable('note');
         $this->db->enableForeignKeyChecks();
     }

@@ -1,17 +1,19 @@
 <script>
     import {onMount} from "svelte";
     import {DataService} from "../services/DataService";
-    import {noteStore, categoryStore} from "../stores";
+    import {noteStore, categoryStore, selectedCategory} from "../stores";
     import Note from "../components/Note.svelte";
     import InfiniteScroll from "../components/InfiniteScroll.svelte";
-    import EditModal from "../components/EditModal.svelte";
+    import NoteModal from "../components/NoteModal.svelte";
     import AddButton from "../components/AddButton.svelte";
+    import Sidebar from "../components/Sidebar.svelte";
 
 
     // modal
     let modal;
 
     const emptyNote = {
+        category_id: 'NULL',
         title: '',
         content: '',
     }
@@ -31,6 +33,11 @@
         $categoryStore = res.categories;
     }
 
+    $: filteredNotes = $noteStore.filter(note => {
+        if (!$selectedCategory) return true;
+        else return note['category_id'] === $selectedCategory?.id
+    });
+
     onMount(() => {
         fetchNoteBatch();
         fetchCategories();
@@ -41,14 +48,19 @@
 <main class="container-fluid">
     <div class="row">
         <div class="col-auto">
+            <Sidebar/>
         </div>
         <div class="col">
             <div class="container">
                 <div class="row">
-                    <h3>Alle Notizen</h3>
+                    {#if ($selectedCategory)}
+                        <h3>{$selectedCategory.name}</h3>
+                    {:else}
+                        <h3>Alle Notizen</h3>
+                    {/if}
                 </div>
                 <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 gy-3 position-relative">
-                    {#each $noteStore as note}
+                    {#each filteredNotes as note}
                         <div class="col">
                             <Note
                                     note={note}
@@ -61,8 +73,8 @@
                             on:loadMore={() => {offset += limit; fetchNoteBatch()}}/>
                 </div>
 
-                <EditModal bind:this={modal}/>
-                <AddButton on:click={() => modal.show(emptyNote)}/>
+                <NoteModal bind:this={modal}/>
+                <AddButton text={"+ Neue Notiz"} on:click={() => modal.show(emptyNote)}/>
             </div>
 
         </div>

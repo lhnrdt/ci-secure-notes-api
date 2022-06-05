@@ -10,7 +10,7 @@ class UserRules
     /**
      * @throws Exception
      */
-    public function validateUser(string $str, string $fields, array $data): bool
+    public function validate_user(string $str, string $fields, array $data): bool
     {
         try {
             $model = new UserModel();
@@ -19,6 +19,11 @@ class UserRules
         } catch (Exception $e) {
             return false;
         }
+    }
+
+    public function validate_color(string $str): bool
+    {
+        return preg_match('/^#([A-Fa-f\d]{6}|[A-Fa-f\d]{3})$/', $str);
     }
 
 }

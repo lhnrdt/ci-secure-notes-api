@@ -16,6 +16,8 @@ function createDataService() {
         if (response.status === 401) {
             return await refreshToken(() => getResource(url))
         }
+
+
     }
 
     async function postResource(url, formData) {
@@ -25,6 +27,10 @@ function createDataService() {
             body: formData
         })
 
+        if (response.status === 400) {
+            let responseJSON = await response.json();
+            toasts.error(responseJSON.message);
+        }
 
         if (response.status === 401) {
             await refreshToken(() => postResource(url, formData));
@@ -79,6 +85,7 @@ function createDataService() {
     return {
         getResource,
         postResource,
+        deleteResource,
         createNote,
         deleteNote,
         updateNote

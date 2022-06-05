@@ -10,11 +10,12 @@
 
     let newNote;
     $: newNote = !noteData?.id;
-    $: color = $categoryStore.find(c => c.id === noteData?.category_id)?.color || 'white';
+    $: color = $categoryStore.find(c => c.id === noteData?.category_id)?.color || '#ffffff';
 
     export const show = (note) => {
         open = true;
         showBackdrop = true;
+        if (!note.category_id) note.category_id = 'NULL';
         noteData = note;
     }
 
@@ -27,6 +28,8 @@
 
         const formData = new FormData(e.target);
         const user = Utils.getUser();
+
+        if (formData.get('category_id') === 'NULL') formData.delete('category_id');
 
         formData.append('user_id', user.id);
 
@@ -42,9 +45,11 @@
 
 
     const handleNoteDeleted = () => {
-        DataService.deleteNote(noteData.id);
-        $noteStore = $noteStore.filter(note => note.id !== noteData.id);
-        hide();
+        if (confirm('Notiz wirklich löschen?')) {
+            DataService.deleteNote(noteData.id);
+            $noteStore = $noteStore.filter(note => note.id !== noteData.id);
+            hide();
+        }
     };
 
 </script>
@@ -80,6 +85,7 @@
                                     style:background-color={color}
                                     bind:value={noteData.category_id}
                             >
+                                <option value="NULL" selected class="default-category">keine Kategorie</option>
                                 {#await $categoryStore}
                                     <option value="">loading...</option>
                                 {:then categories}
@@ -117,5 +123,9 @@
 <style>
     .modal {
         display: block;
+    }
+
+    .default-category {
+        background: #ffffff;
     }
 </style>

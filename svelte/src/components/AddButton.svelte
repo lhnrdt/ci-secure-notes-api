@@ -1,10 +1,10 @@
 <script>
-
+    export let text = '+';
 </script>
 
 <div class="position-fixed button-container" on:click>
     <button type="button" class="btn btn-primary" data-toggle="button" aria-pressed="false">
-        + Neue Notiz
+        {text}
     </button>
 </div>
 

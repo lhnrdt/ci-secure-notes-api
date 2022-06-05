@@ -19,7 +19,8 @@ class CategoryModel extends Model
     /**
      * @throws Exception
      */
-    public function findCategoriesByUser($user) {
+    public function findCategoriesByUser($user): array
+    {
         $categories = $this->asArray()
             ->where(['user_id' => $user])
             ->findAll();
@@ -27,6 +28,29 @@ class CategoryModel extends Model
         if (!$categories) throw new Exception('No Categories found for this user.');
 
         return $categories;
+    }
+
+    /**
+     * @throws Exception
+     */
+    public function findCategoryById($id)
+    {
+        $category = $this
+            ->asArray()
+            ->where(['category.id' => $id])
+            ->first();
+
+        if (!$category) throw new Exception('Could not find Category with specified ID');
+
+        return $category;
+    }
+
+    /**
+     * @throws Exception
+     */
+    public function checkOwnership($category, $userId)
+    {
+        if ($category['user_id'] != $userId) throw new Exception('This category does not belong to the user.');
     }
 
 }

@@ -24,11 +24,16 @@ class NoteSeeder extends Seeder
     private function generateNote($rank): array
     {
         $faker = Factory::create();
+        $wCategory = 2;
+        $wNoCategory = 5;
+        $isCategory = random_int(0, $wCategory + $wNoCategory) < $wCategory;
+        $category = random_int(1, 9);
+
         return [
             'title' => $faker->sentence(3),
             'content' => $rank.' '.$faker->sentence(random_int(25, 55)),
             'user_id' => 1,
-            'category_id' => random_int(1, 9)
+            'category_id' => $isCategory ? $category : NULL
         ];
     }
 }
