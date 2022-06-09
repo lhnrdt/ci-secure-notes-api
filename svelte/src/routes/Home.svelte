@@ -46,12 +46,12 @@
 </script>
 
 <main class="container-fluid">
-    <div class="row">
-        <div class="col-auto">
+    <div class="row flex-nowrap">
+        <div class="col-2 col-md-auto col-xl-2 px-sm-2 px-0 bg-light">
             <Sidebar/>
         </div>
         <div class="col">
-            <div class="container">
+            <div class="container my-3 px-0 px-md-3">
                 <div class="row">
                     {#if ($selectedCategory)}
                         <h3>{$selectedCategory.name}</h3>
@@ -67,6 +67,8 @@
                                     on:noteClicked={(e) => modal.show(e.detail.note)}
                             />
                         </div>
+                    {:else}
+                        <p class="text-muted">Keine Notizen.</p>
                     {/each}
                     <InfiniteScroll
                             threshold={100}

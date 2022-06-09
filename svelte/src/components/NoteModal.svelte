@@ -59,7 +59,7 @@
             <div class="modal-content" style:background-color={color}>
                 <div class="modal-header">
                     <h5 class="modal-title">Notiz bearbeiten</h5>
-                    <button on:click={hide} type="button" class="close" data-dismiss="modal" aria-label="Close"
+                    <button on:click={hide} type="button" class="close custom-close" data-dismiss="modal" aria-label="Close"
                             style:background-color={color}
                     >
                         <span aria-hidden="true">&times;</span>
@@ -127,5 +127,10 @@
 
     .default-category {
         background: #ffffff;
+    }
+
+    .custom-close {
+        aspect-ratio: 1/1;
+        border: none;
     }
 </style>

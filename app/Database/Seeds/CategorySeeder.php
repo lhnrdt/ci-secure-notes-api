@@ -20,7 +20,7 @@ class CategorySeeder extends Seeder
         $faker = Factory::create('en_US');
 
         return [
-            'name' => $faker->catchPhrase(),
+            'name' => $faker->word(),
             'color' => $color,
             'user_id' => 1
         ];

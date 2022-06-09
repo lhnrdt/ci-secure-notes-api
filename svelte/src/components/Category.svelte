@@ -1,5 +1,5 @@
 <script>
-    import {Trash} from "svelte-bootstrap-icons";
+    import {X} from "svelte-bootstrap-icons";
     import {DataService} from "../services/DataService";
     import {selectedCategory, categoryStore, noteStore} from "../stores";
 
@@ -8,19 +8,19 @@
     export let clickFunction = () => {
     };
 
-    let displayDelete = false;
+    export let showEditControls = false;
 
     const handleDisplayDelete = () => {
-        displayDelete = true;
+        showEditControls = true;
     }
 
     const handleHideDelete = () => {
-        displayDelete = false;
+        showEditControls = false;
     }
 
-    const deleteCategory = async (category) => {
+    const deleteCategory = (category) => {
         if (confirm('Wirklich löschen?')) {
-            await DataService.deleteResource(`/api/categories/${category.id}`);
+            DataService.deleteResource(`/api/categories/${category.id}`);
             $categoryStore = $categoryStore.filter(cat => cat.id !== category.id);
             $noteStore.forEach(n => {
                 if (n.category_id === category.id) {
@@ -40,24 +40,27 @@
 
 </script>
 
-<li class="nav-item"
+<li class="nav-item w-100 clickable"
     on:click={() => clickFunction(category)}
-    on:mouseenter={handleDisplayDelete}
-    on:mouseleave={handleHideDelete}
 >
-    <a href="#" class="nav-link" class:active aria-current="page">
-        <div class="d-flex justify-content-between align-items-center">
-            <div class="d-flex align-items-center me-2">
-                <span class="color-circle" style:background-color={category.color}></span>
-                {category.name}
-            </div>
-            <div class="controls" on:click={handleNoteDelete}>
-                {#if (displayDelete)}
-                    <Trash fill="red"/>
-                {/if}
-            </div>
+    <a class="nav-link align-middle text-md-start px-2 py-3 py-md-2 text-nowrap
+    d-flex align-items-center justify-content-center justify-content-md-between"
+       class:active aria-current="page"
+    >
+        <div class:shaking={showEditControls} class="d-flex align-items-center">
+            <div class="fs-4 color-circle" style:background-color={category.color}></div>
+            <span class="ms-1 d-none d-md-inline">{category.name}</span>
+        </div>
+        <div class="controls d-flex align-items-center"
+             on:click={handleNoteDelete}
+             class:d-none={!showEditControls}
+        >
+            {#if (showEditControls)}
+                <X fill="red"/>
+            {/if}
         </div>
     </a>
+
 </li>
 
 <style>
@@ -71,14 +74,40 @@
     }
 
     .controls:hover {
-        transform: scale(1.5);
+        transform: scale(1.4);
+    }
+
+    .clickable {
+        cursor: pointer;
     }
 
     .color-circle {
+        border: 1pt solid var(--bs-secondary);
+        overflow: hidden;
+        line-height: 18px;
         display: inline-block;
         border-radius: 50%;
         width: 18px;
         height: 18px;
-        margin-inline: 1em;
+    }
+
+    .shaking {
+        --rotate-amount: 2deg;
+        animation: shaking infinite 250ms;
+    }
+
+    @keyframes shaking {
+
+        25% {
+            transform: rotate(calc(var(--rotate-amount) * -1)) translateX(-1px);
+        }
+
+        75% {
+            transform: rotate(var(--rotate-amount)) translateX(1px);
+        }
+
+        0%, 100% {
+            transform: rotate(0) translateX(0);
+        }
     }
 </style>

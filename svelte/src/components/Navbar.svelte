@@ -13,7 +13,7 @@
     }
 </script>
 <header>
-    <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark" aria-label="Fourth navbar example">
+    <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark shadow" aria-label="Fourth navbar example">
         <div class="container-fluid">
             <a class="navbar-brand" href="/">Notizen</a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarsExample04"
