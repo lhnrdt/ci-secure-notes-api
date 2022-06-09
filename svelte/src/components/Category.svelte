@@ -88,7 +88,7 @@
 
     .shaking {
         --rotate-amount: 2deg;
-        animation: shaking infinite 250ms;
+        animation: shaking infinite 180ms;
     }
 
     @keyframes shaking {

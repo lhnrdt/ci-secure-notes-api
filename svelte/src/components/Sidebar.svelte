@@ -1,10 +1,9 @@
 <script>
     import {categoryStore, selectedCategory} from "../stores";
     import Category from "./Category.svelte";
-    import CategoryModal from "./CategoryModal.svelte";
     import {Pencil, BookmarkPlus} from 'svelte-bootstrap-icons';
 
-    let categoryModal;
+    export let modal;
     let showEditControls = false;
 
     const handleSelectCategory = (category) => {
@@ -13,7 +12,7 @@
     };
 
     const handleAddCategory = async () => {
-        categoryModal.show();
+        modal.show();
     };
 
     const toggleEditControls = () => {
@@ -34,18 +33,25 @@
                       active={(category === $selectedCategory)}
                       {showEditControls}
             />
+        {:else}
+            <!--TODO-->
+            <li class="nav-item w-100 skeleton"></li>
+            <li class="nav-item w-100 skeleton"></li>
+            <li class="nav-item w-100 skeleton"></li>
+            <li class="nav-item w-100 skeleton"></li>
+            <li class="nav-item w-100 skeleton"></li>
         {/each}
     </ul>
     <hr class="w-100 mb-0">
     <div class="d-flex flex-wrap justify-content-evenly w-100">
-        <button type="button" class="btn mt-2 hover-light" data-toggle="tooltip"  data-placement="top"
+        <button type="button" class="btn mt-2 hover-light" data-toggle="tooltip" data-placement="top"
                 aria-pressed="false"
                 title="Kategorien bearbeiten"
                 on:click={toggleEditControls}
         >
             <Pencil/>
         </button>
-        <button type="button" class="btn btn-sq mt-2 hover-light" data-toggle="tooltip"  data-placement="top"
+        <button type="button" class="btn btn-sq mt-2 hover-light" data-toggle="tooltip" data-placement="top"
                 aria-pressed="false"
                 title="Kategorie hinzufügen"
                 on:click={handleAddCategory}
@@ -53,7 +59,6 @@
             <BookmarkPlus/>
         </button>
     </div>
-    <CategoryModal bind:this={categoryModal}/>
 </div>
 
 <style>
@@ -65,5 +70,10 @@
         color: var(--bs-secondary);
         margin-inline-start: 0;
         margin-inline-end: 0;
+    }
+
+    .skeleton {
+        background: lightgray;
+        width: 5em;
     }
 </style>

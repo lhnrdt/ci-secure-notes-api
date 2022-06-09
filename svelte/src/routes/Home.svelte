@@ -7,10 +7,12 @@
     import NoteModal from "../components/NoteModal.svelte";
     import AddButton from "../components/AddButton.svelte";
     import Sidebar from "../components/Sidebar.svelte";
+    import CategoryModal from "../components/CategoryModal.svelte";
 
 
     // modal
-    let modal;
+    let noteModal;
+    let categoryModal;
 
     const emptyNote = {
         category_id: 'NULL',
@@ -48,7 +50,7 @@
 <div class="container-fluid">
     <div class="row flex-nowrap">
         <div class="col-2 px-sm-2 px-0 bg-light position-fixed">
-            <Sidebar/>
+            <Sidebar modal={categoryModal}/>
         </div>
         <div class="col offset-2">
             <main class="container my-3 px-0 px-md-3">
@@ -64,7 +66,7 @@
                         <div class="col">
                             <Note
                                     note={note}
-                                    on:noteClicked={(e) => modal.show(e.detail.note)}
+                                    on:noteClicked={(e) => noteModal.show(e.detail.note)}
                             />
                         </div>
                     {:else}
@@ -75,10 +77,11 @@
                             on:loadMore={() => {offset += limit; fetchNoteBatch()}}/>
                 </div>
 
-                <NoteModal bind:this={modal} noteData={emptyNote}/>
-                <AddButton text={"+ Neue Notiz"} on:click={() => modal.show(emptyNote)}/>
+                <AddButton text={"+ Neue Notiz"} on:click={() => noteModal.show(emptyNote)}/>
             </main>
 
         </div>
     </div>
 </div>
+<NoteModal bind:this={noteModal} noteData={emptyNote}/>
+<CategoryModal bind:this={categoryModal}/>
