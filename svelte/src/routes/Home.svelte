@@ -25,7 +25,7 @@
     // data
     async function fetchNoteBatch() {
         const data = await DataService.getResource(`/api/notes?offset=${offset}&limit=${limit}`);
-        if (data.note.length) $noteStore = [...$noteStore, ...data.note];
+        $noteStore = [...$noteStore, ...data.note];
     }
 
     async function fetchCategories() {
@@ -45,13 +45,13 @@
 
 </script>
 
-<main class="container-fluid">
+<div class="container-fluid">
     <div class="row flex-nowrap">
-        <div class="col-2 col-md-auto col-xl-2 px-sm-2 px-0 bg-light">
+        <div class="col-2 px-sm-2 px-0 bg-light position-fixed">
             <Sidebar/>
         </div>
-        <div class="col">
-            <div class="container my-3 px-0 px-md-3">
+        <div class="col offset-2">
+            <main class="container my-3 px-0 px-md-3">
                 <div class="row">
                     {#if ($selectedCategory)}
                         <h3>{$selectedCategory.name}</h3>
@@ -75,14 +75,10 @@
                             on:loadMore={() => {offset += limit; fetchNoteBatch()}}/>
                 </div>
 
-                <NoteModal bind:this={modal}/>
+                <NoteModal bind:this={modal} noteData={emptyNote}/>
                 <AddButton text={"+ Neue Notiz"} on:click={() => modal.show(emptyNote)}/>
-            </div>
+            </main>
 
         </div>
     </div>
-</main>
-
-
-<style>
-</style>
+</div>

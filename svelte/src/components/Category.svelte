@@ -2,6 +2,7 @@
     import {X} from "svelte-bootstrap-icons";
     import {DataService} from "../services/DataService";
     import {selectedCategory, categoryStore, noteStore} from "../stores";
+    import {createEventDispatcher} from "svelte";
 
     export let category;
     export let active = false;
@@ -9,14 +10,7 @@
     };
 
     export let showEditControls = false;
-
-    const handleDisplayDelete = () => {
-        showEditControls = true;
-    }
-
-    const handleHideDelete = () => {
-        showEditControls = false;
-    }
+    const dispatch = createEventDispatcher();
 
     const deleteCategory = (category) => {
         if (confirm('Wirklich löschen?')) {
@@ -34,6 +28,7 @@
 
     const handleNoteDelete = (e) => {
         e.stopPropagation();
+        dispatch('noteDeleted');
         deleteCategory(category);
         $selectedCategory = null;
     };

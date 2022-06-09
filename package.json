@@ -22,6 +22,7 @@
   "dependencies": {
     "@egjs/svelte-grid": "^1.10.0",
     "bootstrap": "^5.1.3",
+    "jquery": "^3.6.0",
     "sirv-cli": "^2.0.0",
     "svelte-bricks": "^0.1.7",
     "svelte-masonry-layout": "^0.0.7",

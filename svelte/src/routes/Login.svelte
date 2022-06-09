@@ -1,10 +1,11 @@
 <script>
     import {AuthService} from "../services/AuthService";
-    import {link} from "svelte-navigator";
+    import {link, navigate} from "svelte-navigator";
 
     const handleLogin = async (e) => {
         let formData = new FormData(e.target);
         await AuthService.login(formData);
+        navigate('/');
     }
 
 </script>

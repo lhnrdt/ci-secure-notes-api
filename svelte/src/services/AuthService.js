@@ -9,8 +9,9 @@ function createAuthService() {
         });
 
         try {
-            await processAuthResponse(res);
+            const user = await processAuthResponse(res);
             toasts.success("Login successful.");
+            return user;
         } catch (e) {
             toasts.error(e.message);
         }
@@ -23,8 +24,9 @@ function createAuthService() {
         });
 
         try {
-            await processAuthResponse(res);
-            toasts.success("Login successful.");
+            const user = await processAuthResponse(res);
+            toasts.success("Registration successful.");
+            return user;
         } catch (e) {
             toasts.error(e.message);
         }
@@ -35,16 +37,18 @@ function createAuthService() {
             let resJSON = await response.json();
             localStorage.setItem('access_token', resJSON["access_token"]);
             localStorage.setItem('user', JSON.stringify(resJSON["user"]));
-            navigate('/');
+            return resJSON['user'];
         }
         if (response.status === 400) {
             throw new Error('Invalid Login Credentials');
         }
     }
 
-    function logout() {
+    async function logout() {
+        await fetch('auth/logout');
         localStorage.removeItem('access_token');
         localStorage.removeItem('user');
+        toasts.success('Ausgeloggt.')
         navigate('/login');
     }
 
