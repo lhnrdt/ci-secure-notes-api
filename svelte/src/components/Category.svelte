@@ -1,5 +1,5 @@
 <script>
-    import {DashCircleFill, Pencil} from "svelte-bootstrap-icons";
+    import {DashCircleFill, PencilFill} from "svelte-bootstrap-icons";
     import {DataService} from "../services/DataService";
     import {selectedCategory, categoryStore, noteStore} from "../stores";
     import {createEventDispatcher} from "svelte";
@@ -58,12 +58,12 @@
             <div class="fs-4 color-circle flex-shrink-0" style:background-color={category.color}></div>
             <span class="ms-1 d-none d-md-inline     text-truncate flex-shrink-1">{category.name}</span>
         </div>
-        <div class="edit d-flex align-items-center justify-content-center ms-auto"
+        <div class="edit d-flex align-items-center justify-content-center ms-md-auto"
              on:click={handleCategoryEdit}
              class:hidden={!showEditControls}
              title="Umbenennen"
         >
-            <Pencil fill="var(--bs-secondary)"/>
+            <PencilFill fill="var(--bs-secondary)"/>
         </div>
     </a>
 
@@ -121,6 +121,7 @@
 
     .hidden {
         width: 0;
+        display: none;
     }
 
     @keyframes shaking {

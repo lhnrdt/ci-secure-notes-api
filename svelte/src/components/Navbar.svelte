@@ -1,10 +1,10 @@
 <script>
 
     import {AuthService} from '../services/AuthService';
-    import {navigate, link, useLocation} from "svelte-navigator";
-    import {noteStore, categoryStore, selectedCategory} from "../stores";
-    import {PersonFill} from 'svelte-bootstrap-icons';
     import {Utils} from "../services/Utils";
+    import {noteStore, categoryStore, selectedCategory, filteredNoteStore} from "../stores";
+    import {navigate, link, useLocation} from "svelte-navigator";
+    import {PersonFill, Search} from 'svelte-bootstrap-icons';
 
     const location = useLocation();
     const user = Utils.getUser();
@@ -12,12 +12,25 @@
     let showLoginNav;
     $: showLoginNav = ['/login', '/register'].includes($location.pathname);
 
+    let searchQuery = "";
+
     async function handleLogout() {
         $noteStore = [];
         $categoryStore = [];
         $selectedCategory = null;
         await AuthService.logout();
         await navigate('/login');
+    }
+
+    function handleSearch() {
+        let lowercaseSearchQuery = searchQuery.toLowerCase();
+        $filteredNoteStore = $noteStore.filter(note => {
+            let matches;
+            if (note.title) matches ||= note.title.toLowerCase().includes(lowercaseSearchQuery);
+            if (note.category_name) matches ||= note.category_name.toLowerCase().includes(lowercaseSearchQuery);
+            matches ||= note.content.toLowerCase().includes(lowercaseSearchQuery);
+            return matches;
+        });
     }
 </script>
 <header>
@@ -42,11 +55,30 @@
                         </li>
                     </ul>
                 {:else}
+                    <div class="input-group me-3">
+                        <button
+                                class="input-group-text text-white border-0 bg-transparent"
+                        >
+                            <Search/>
+                        </button>
+                        <input
+                                class="form-control border-0 border-bottom bg-dark text-white"
+                                autocomplete="off"
+                                type="search"
+                                placeholder="Suche"
+                                bind:value={searchQuery}
+                                on:input={handleSearch}
+                        />
+                    </div>
                     <div class="position-relative ms-auto">
-                        <a href="#" class="d-flex align-items-center text-white text-decoration-none dropdown-toggle"
+                        <a class="d-flex align-items-center text-white text-decoration-none dropdown-toggle"
                            id="dropdownUser1" data-bs-toggle="dropdown" aria-expanded="false">
-                            <PersonFill/>
-                            <strong>{user?.username ?? 'not logged in'}</strong>
+                            <div class="d-inline-block">
+                                <PersonFill/>
+                            </div>
+                            <div class="ms-2">
+                                <strong>{user?.username ?? 'not logged in'}</strong>
+                            </div>
                         </a>
                         <ul class="dropdown-menu dropdown-menu-dark text-small shadow position-absolute "
                             aria-labelledby="dropdownUser1">

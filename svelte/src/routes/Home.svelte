@@ -1,7 +1,7 @@
 <script>
     import {onMount} from "svelte";
     import {DataService} from "../services/DataService";
-    import {noteStore, categoryStore, selectedCategory} from "../stores";
+    import {noteStore, categoryStore, selectedCategory, filteredNoteStore} from "../stores";
     import Note from "../components/Note.svelte";
     import InfiniteScroll from "../components/InfiniteScroll.svelte";
     import NoteModal from "../components/NoteModal.svelte";
@@ -37,9 +37,9 @@
         $categoryStore = res.categories;
     }
 
-    $: filteredNotes = $noteStore.filter(note => {
-        if (!$selectedCategory) return true;
-        else return note['category_id'] === $selectedCategory?.id
+    $: $filteredNoteStore = $noteStore.filter(note => {
+         if (!$selectedCategory) return true;
+         else return note['category_id'] === $selectedCategory?.id
     });
 
     if (!localStorage.getItem('user')) {
@@ -68,7 +68,7 @@
                     {/if}
                 </div>
                 <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 gy-3 position-relative">
-                    {#each filteredNotes as note}
+                    {#each $filteredNoteStore as note}
                         <div class="col">
                             <Note
                                     note={note}
