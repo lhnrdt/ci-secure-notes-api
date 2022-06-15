@@ -46,7 +46,7 @@
                         <a href="#" class="d-flex align-items-center text-white text-decoration-none dropdown-toggle"
                            id="dropdownUser1" data-bs-toggle="dropdown" aria-expanded="false">
                             <PersonFill/>
-                            <strong>{user.username}</strong>
+                            <strong>{user?.username ?? 'not logged in'}</strong>
                         </a>
                         <ul class="dropdown-menu dropdown-menu-dark text-small shadow position-absolute "
                             aria-labelledby="dropdownUser1">

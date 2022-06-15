@@ -27,8 +27,8 @@ class Categories extends BaseController
             return $this->getResponse(
                 [
                     'message' => $e->getMessage(),
-                ],
-                ResponseInterface::HTTP_NOT_FOUND
+                    'categories' => []
+                ]
             );
         }
     }
@@ -93,6 +93,53 @@ class Categories extends BaseController
                         'message' => 'Category deleted'
                     ]
                 );
+        } catch (Exception $e) {
+            return $this
+                ->getResponse(
+                    [
+                        'message' => $e->getMessage()
+                    ],
+                    ResponseInterface::HTTP_BAD_REQUEST
+                );
+        }
+    }
+
+    public function  update($id): ResponseInterface
+    {
+        $rules = [
+            'name' => 'required|max_length[100]',
+            'color' => 'validate_color',
+            'user_id' => 'required',
+        ];
+
+        $input = $this->getRequestInput($this->request);
+
+        if (!$this->validateRequest($input, $rules)) {
+            return $this
+                ->getResponse(
+                    [
+                        'message' => 'Validation failed'
+                    ],
+                    ResponseInterface::HTTP_BAD_REQUEST
+                );
+        }
+
+        try {
+            helper('jwt');
+            $encodedToken = getJWTFromRequest($this->request->getServer('HTTP_AUTHORIZATION'));
+            $userId = validateAccessJWTFromRequest($encodedToken);
+
+            $model = new CategoryModel();
+            $category = $model->findCategoryById($id);
+            $model->checkOwnership($category, $userId);
+            $model->update($id, $input);
+
+            return $this->getResponse(
+                [
+                    'message' => 'Category updated',
+                    'category' => $model->findCategoryById($id)
+                ]
+            );
         } catch (Exception $e) {
             return $this
                 ->getResponse(

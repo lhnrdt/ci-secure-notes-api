@@ -37,10 +37,10 @@ class CategoryModel extends Model
     {
         $category = $this
             ->asArray()
-            ->where(['category.id' => $id])
+            ->where(['id' => $id])
             ->first();
 
-        if (!$category) throw new Exception('Could not find Category with specified ID');
+        if (!$category) throw new Exception('Could not find Category with specified ID '.$id);
 
         return $category;
     }

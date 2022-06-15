@@ -4,19 +4,26 @@
     import {categoryStore} from "../stores";
 
 
+    const SELECTABLE_COLORS = ["#fbb4ae", "#b3cde3", "#ccebc5", "#decbe4", "#fed9a6", "#ffffcc", "#e5d8bd", "#fddaec", "#f2f2f2"];
+    const EMPTY_CATEGORY = {
+        name: '',
+        color: SELECTABLE_COLORS[0]
+    }
+
     let modal;
-    let categoryData;
-    let selectedColor;
+    let categoryData = EMPTY_CATEGORY;
+    $: newCategory = !categoryData?.id;
 
-    let selectableColors = ["#fbb4ae", "#b3cde3", "#ccebc5", "#decbe4", "#fed9a6", "#ffffcc", "#e5d8bd", "#fddaec", "#f2f2f2"];
-
-    export const show = (note) => {
+    export const show = (category) => {
+        if (category) {
+            categoryData = category;
+        }
         jQuery(modal).modal('show');
-        categoryData = note;
     }
 
     export const hide = () => {
         jQuery(modal).modal('hide');
+        categoryData = EMPTY_CATEGORY;
     }
 
     const handleSubmit = async (e) => {
@@ -26,10 +33,13 @@
 
         formData.append('user_id', user.id);
 
-        let res = await DataService.postResource('/api/categories', formData);
-
-        $categoryStore = [...$categoryStore, res.category];
-
+        if (newCategory) {
+            const res = await DataService.postResource('/api/categories', formData);
+            $categoryStore = [...$categoryStore, res.category];
+        } else {
+            const res = await DataService.postResource(`/api/categories/${categoryData.id}`, formData);
+            $categoryStore = $categoryStore.map(cat => res.category.id === cat.id ? res.category : cat);
+        }
         hide();
     }
 </script>
@@ -38,7 +48,11 @@
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title">Neue Kategorie</h5>
+                {#if newCategory}
+                    <h5 class="modal-title">Neue Kategorie</h5>
+                {:else }
+                    <h5 class="modal-title">Kategorie bearbeiten</h5>
+                {/if}
                 <button on:click={hide} type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
@@ -46,7 +60,8 @@
             <form id="newNote" on:submit|preventDefault={handleSubmit}>
                 <div class="modal-body">
                     <div class="card-title">
-                        <input type="text" class="form-control fw-bolder" placeholder="Name" name="name" value="">
+                        <input type="text" class="form-control fw-bolder" placeholder="Name" name="name"
+                               bind:value={categoryData.name}>
                     </div>
 
                     <p class="card-text"></p>
@@ -54,10 +69,10 @@
                     <div class="input-group mb-3">
                         <label class="input-group-text" for="selectColor">Farbe</label>
                         <select id="selectColor" name="color" class="form-select" aria-label="Color"
-                                bind:value={selectedColor}
-                                style:background-color={selectedColor}
+                                bind:value={categoryData.color}
+                                style:background-color={categoryData.color}
                         >
-                            {#each selectableColors as color}
+                            {#each SELECTABLE_COLORS as color}
                                 <option value={color} style:background-color={color}>
                                     {color}
                                 </option>

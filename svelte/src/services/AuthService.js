@@ -8,13 +8,9 @@ function createAuthService() {
             body: formData
         });
 
-        try {
-            const user = await processAuthResponse(res);
-            toasts.success("Login successful.");
-            return user;
-        } catch (e) {
-            toasts.error(e.message);
-        }
+        const user = await processAuthResponse(res);
+        toasts.success("Login successful.");
+        return user;
     }
 
     async function register(formData) {

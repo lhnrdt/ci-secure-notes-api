@@ -33,8 +33,7 @@ class Notes extends BaseController
                 [
                     'message' => $e->getMessage(),
                     'note' => []
-                ],
-                ResponseInterface::HTTP_NOT_FOUND
+                ]
             );
         }
 

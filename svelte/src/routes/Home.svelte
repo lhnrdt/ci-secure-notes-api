@@ -8,7 +8,8 @@
     import AddButton from "../components/AddButton.svelte";
     import Sidebar from "../components/Sidebar.svelte";
     import CategoryModal from "../components/CategoryModal.svelte";
-
+    import {navigate} from "svelte-navigator";
+    import Navbar from "../components/Navbar.svelte";
 
     // modal
     let noteModal;
@@ -23,6 +24,7 @@
     // infinite scroll
     const limit = 20;
     let offset = 0;
+
 
     // data
     async function fetchNoteBatch() {
@@ -40,19 +42,23 @@
         else return note['category_id'] === $selectedCategory?.id
     });
 
-    onMount(() => {
-        fetchNoteBatch();
-        fetchCategories();
-    })
-
+    if (!localStorage.getItem('user')) {
+        navigate('/login');
+    } else {
+        onMount(() => {
+            fetchNoteBatch();
+            fetchCategories();
+        });
+    }
 </script>
 
+<Navbar/>
 <div class="container-fluid">
     <div class="row flex-nowrap">
-        <div class="col-2 px-sm-2 px-0 bg-light position-fixed">
+        <div class="col-3 px-sm-2 px-0 bg-light position-fixed">
             <Sidebar modal={categoryModal}/>
         </div>
-        <div class="col offset-2">
+        <div class="col offset-3">
             <main class="container my-3 px-0 px-md-3">
                 <div class="row">
                     {#if ($selectedCategory)}

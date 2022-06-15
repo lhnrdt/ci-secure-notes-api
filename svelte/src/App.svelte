@@ -2,14 +2,12 @@
 
     import Home from "./routes/Home.svelte";
     import {Router, Route, useLocation} from "svelte-navigator";
-    import Navbar from "./components/Navbar.svelte";
     import Register from "./routes/Register.svelte";
     import Login from "./routes/Login.svelte";
     import {BootstrapToast, ToastContainer} from "svelte-toasts";
 </script>
 
 <Router>
-    <Navbar/>
     <Route path="/">
         <Home/>
     </Route>

@@ -54,7 +54,7 @@ class NoteModel extends Model
 
         $note = $this->findAll($limit, $offset);
 
-        if (!$note) throw new Exception('Could not find note for specified ID');
+        if (!$note) throw new Exception('No notes found.');
 
         return $note;
     }

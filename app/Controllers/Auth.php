@@ -151,7 +151,7 @@ class Auth extends BaseController
                     [
                         'error' => $exception->getMessage(),
                     ],
-                    ResponseInterface::HTTP_BAD_REQUEST
+                    ResponseInterface::HTTP_UNAUTHORIZED
                 );
         }
     }

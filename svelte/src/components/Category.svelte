@@ -1,5 +1,5 @@
 <script>
-    import {X} from "svelte-bootstrap-icons";
+    import {DashCircleFill, Pencil} from "svelte-bootstrap-icons";
     import {DataService} from "../services/DataService";
     import {selectedCategory, categoryStore, noteStore} from "../stores";
     import {createEventDispatcher} from "svelte";
@@ -26,12 +26,16 @@
         }
     }
 
-    const handleNoteDelete = (e) => {
+    const handleCategoryDelete = (e) => {
         e.stopPropagation();
-        dispatch('noteDeleted');
         deleteCategory(category);
         $selectedCategory = null;
     };
+
+    const handleCategoryEdit = (e) => {
+        e.stopPropagation();
+        dispatch('editCategory', {category: category});
+    }
 
 </script>
 
@@ -39,20 +43,27 @@
     on:click={() => clickFunction(category)}
 >
     <a class="nav-link align-middle text-md-start px-2 py-3 py-md-2 text-nowrap
-    d-flex align-items-center justify-content-center justify-content-md-between"
+    d-flex align-items-center justify-content-center justify-content-md-start"
        class:active aria-current="page"
+       title={category.name}
     >
-        <div class:shaking={showEditControls} class="d-flex align-items-center">
-            <div class="fs-4 color-circle" style:background-color={category.color}></div>
-            <span class="ms-1 d-none d-md-inline">{category.name}</span>
-        </div>
-        <div class="controls d-flex align-items-center"
-             on:click={handleNoteDelete}
-             class:d-none={!showEditControls}
+        <div class="controls d-flex align-items-center me-2"
+             on:click={handleCategoryDelete}
+             class:hidden={!showEditControls}
+             title="Löschen"
         >
-            {#if (showEditControls)}
-                <X fill="red"/>
-            {/if}
+            <DashCircleFill fill="red"/>
+        </div>
+        <div class="d-flex align-items-center">
+            <div class="fs-4 color-circle flex-shrink-0" style:background-color={category.color}></div>
+            <span class="ms-1 d-none d-md-inline     text-truncate flex-shrink-1">{category.name}</span>
+        </div>
+        <div class="edit d-flex align-items-center justify-content-center ms-auto"
+             on:click={handleCategoryEdit}
+             class:hidden={!showEditControls}
+             title="Umbenennen"
+        >
+            <Pencil fill="var(--bs-secondary)"/>
         </div>
     </a>
 
@@ -61,15 +72,32 @@
 <style>
     .nav-item:hover {
         background: lightgray;
+        border-radius: 4px;
     }
 
     .controls {
-        width: 20px;
-        transition: transform 200ms ease;
+        width: 14px;
+        transition: transform 200ms ease,
+        width 200ms ease,
+        filter 200ms ease;
     }
 
     .controls:hover {
-        transform: scale(1.4);
+        filter: brightness(50%);
+    }
+
+    .edit {
+        width: 20px;
+        height: 20px;
+        transition: transform 200ms ease;
+    }
+
+    .edit:hover {
+        transform: scale(1.3);
+    }
+
+    .edit svg {
+        width: 14px;
     }
 
     .clickable {
@@ -82,13 +110,17 @@
         line-height: 18px;
         display: inline-block;
         border-radius: 50%;
-        width: 18px;
-        height: 18px;
+        width: 20px;
+        height: 20px;
     }
 
     .shaking {
         --rotate-amount: 2deg;
         animation: shaking infinite 180ms;
+    }
+
+    .hidden {
+        width: 0;
     }
 
     @keyframes shaking {

@@ -18,6 +18,9 @@
     const toggleEditControls = () => {
         showEditControls = !showEditControls;
     }
+    const handleEditCategory = (e) => {
+        modal.show(e.detail.category);
+    };
 
 </script>
 
@@ -28,18 +31,13 @@
     <ul class="nav nav-pills flex-column mb-0 align-items-center align-items-md-start w-100 overflow-auto">
         {#each $categoryStore as category}
             <Category {category}
-                      on:noteDeleted={toggleEditControls}
+                      on:editCategory={handleEditCategory}
                       clickFunction={handleSelectCategory}
                       active={(category === $selectedCategory)}
                       {showEditControls}
             />
         {:else}
-            <!--TODO-->
-            <li class="nav-item w-100 skeleton"></li>
-            <li class="nav-item w-100 skeleton"></li>
-            <li class="nav-item w-100 skeleton"></li>
-            <li class="nav-item w-100 skeleton"></li>
-            <li class="nav-item w-100 skeleton"></li>
+            <p>keine Kategorien</p>
         {/each}
     </ul>
     <hr class="w-100 mb-0">

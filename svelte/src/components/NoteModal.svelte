@@ -82,15 +82,11 @@
                                 bind:value={noteData.category_id}
                         >
                             <option value="NULL" selected class="default-category">keine Kategorie</option>
-                            {#await $categoryStore}
-                                <option value="">loading...</option>
-                            {:then categories}
-                                {#each categories as category}
-                                    <option value={category.id} style:background-color={category.color}>
-                                        {category.name}
-                                    </option>
-                                {/each}
-                            {/await}
+                            {#each $categoryStore as category}
+                                <option value={category.id} style:background-color={category.color}>
+                                    {category.name}
+                                </option>
+                            {/each}
                         </select>
                     </div>
                 </div>

@@ -88,7 +88,7 @@ function createDataService() {
         deleteResource,
         createNote,
         deleteNote,
-        updateNote
+        updateNote,
     }
 }
 

@@ -1,15 +1,24 @@
 <script>
     import {AuthService} from "../services/AuthService";
     import {link, navigate} from "svelte-navigator";
+    import {toasts} from "svelte-toasts";
+    import Navbar from "../components/Navbar.svelte";
 
     const handleLogin = async (e) => {
         let formData = new FormData(e.target);
-        await AuthService.login(formData);
-        navigate('/');
+
+        try {
+            await AuthService.login(formData);
+            navigate('/');
+        } catch (e) {
+            toasts.error(e.message);
+        }
+
     }
 
 </script>
 
+<Navbar/>
 <main>
     <form on:submit|preventDefault={handleLogin} class="form-signin text-center">
         <h1 class="h3 mb-3 font-weight-normal">Login</h1>

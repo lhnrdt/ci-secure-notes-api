@@ -1,15 +1,18 @@
 <script>
     import {AuthService} from "../services/AuthService";
-    import {link} from "svelte-navigator";
+    import {link, navigate} from "svelte-navigator";
+    import Navbar from "../components/Navbar.svelte";
 
     const handleRegister = async (e) => {
         let formData = new FormData(e.target);
         await AuthService.register(formData);
+        navigate('/');
     }
 
 </script>
-<main>
 
+<Navbar/>
+<main>
     <form on:submit|preventDefault={handleRegister} class="form-signin text-center">
         <h1 class="h3 mb-3 font-weight-normal">Registrieren</h1>
         <label for="inputUsername" class="sr-only">Email Adresse</label>
