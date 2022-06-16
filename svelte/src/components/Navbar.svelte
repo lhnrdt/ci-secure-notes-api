@@ -2,7 +2,7 @@
 
     import {AuthService} from '../services/AuthService';
     import {Utils} from "../services/Utils";
-    import {noteStore, categoryStore, selectedCategory, filteredNoteStore} from "../stores";
+    import {noteStore, categoryStore, selectedCategory, searchQuery} from "../stores";
     import {navigate, link, useLocation} from "svelte-navigator";
     import {PersonFill, Search} from 'svelte-bootstrap-icons';
 
@@ -12,7 +12,6 @@
     let showLoginNav;
     $: showLoginNav = ['/login', '/register'].includes($location.pathname);
 
-    let searchQuery = "";
 
     async function handleLogout() {
         $noteStore = [];
@@ -22,16 +21,6 @@
         await navigate('/login');
     }
 
-    function handleSearch() {
-        let lowercaseSearchQuery = searchQuery.toLowerCase();
-        $filteredNoteStore = $noteStore.filter(note => {
-            let matches;
-            if (note.title) matches ||= note.title.toLowerCase().includes(lowercaseSearchQuery);
-            if (note.category_name) matches ||= note.category_name.toLowerCase().includes(lowercaseSearchQuery);
-            matches ||= note.content.toLowerCase().includes(lowercaseSearchQuery);
-            return matches;
-        });
-    }
 </script>
 <header>
     <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark shadow" aria-label="Fourth navbar example">
@@ -66,8 +55,7 @@
                                 autocomplete="off"
                                 type="search"
                                 placeholder="Suche"
-                                bind:value={searchQuery}
-                                on:input={handleSearch}
+                                bind:value={$searchQuery}
                         />
                     </div>
                     <div class="position-relative ms-auto">
