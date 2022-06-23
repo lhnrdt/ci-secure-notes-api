@@ -42,28 +42,30 @@
 <li class="nav-item w-100 clickable"
     on:click={() => clickFunction(category)}
 >
-    <a class="nav-link align-middle text-md-start px-2 py-3 py-md-2 text-nowrap
+    <a class="nav-link align-middle text-md-start px-2 py-3 py-md-2
     d-flex align-items-center justify-content-center justify-content-md-start"
        class:active aria-current="page"
        title={category.name}
     >
-        <div class="controls d-flex align-items-center me-2"
-             on:click={handleCategoryDelete}
-             class:hidden={!showEditControls}
-             title="Löschen"
-        >
-            <DashCircleFill fill="red"/>
-        </div>
-        <div class="d-flex align-items-center">
+        <div class="d-flex align-items-center w-100">
+            <div class="controls d-flex align-items-center"
+                 on:click={handleCategoryDelete}
+                 class:hidden={!showEditControls}
+                 class:me-2={showEditControls}
+                 title="Löschen"
+            >
+                <DashCircleFill fill="red"/>
+            </div>
+            <div class="controls d-flex align-items-center"
+                 on:click={handleCategoryEdit}
+                 class:hidden={!showEditControls}
+                 class:me-2={showEditControls}
+                 title="Bearbeiten"
+            >
+                <PencilFill fill="var(--bs-secondary)"/>
+            </div>
             <div class="fs-4 color-circle flex-shrink-0" style:background-color={category.color}></div>
-            <span class="ms-1 d-none d-md-inline     text-truncate flex-shrink-1">{category.name}</span>
-        </div>
-        <div class="edit d-flex align-items-center justify-content-center ms-md-auto"
-             on:click={handleCategoryEdit}
-             class:hidden={!showEditControls}
-             title="Umbenennen"
-        >
-            <PencilFill fill="var(--bs-secondary)"/>
+            <span class="ms-1 d-none d-md-inline text-truncate flex-shrink-1">{category.name}</span>
         </div>
     </a>
 
@@ -121,7 +123,6 @@
 
     .hidden {
         width: 0;
-        display: none;
     }
 
     @keyframes shaking {

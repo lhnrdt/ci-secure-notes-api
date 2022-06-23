@@ -15,7 +15,7 @@
     $: if ($searchQuery) content = content.replace($searchQuery, `<mark class="p-0">${$searchQuery}</mark>`);
 
 </script>
-<div class="col" in:scale={{duration: 300, easing: expoInOut}}>
+<div class="col" in:scale={{duration: 200, easing: expoInOut}}>
     <div class="card note h-100"
          on:click={() => dispatch('noteClicked', {note: note})}
          style:background-color={note.color}
