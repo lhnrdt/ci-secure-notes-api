@@ -1,7 +1,7 @@
 <script>
     import {onMount} from "svelte";
     import {DataService} from "../services/DataService";
-    import {noteStore, categoryStore, selectedCategory, filteredNoteStore} from "../stores";
+    import {noteStore, categoryStore, selectedCategory, searchQuery} from "../stores";
     import Note from "../components/Note.svelte";
     import InfiniteScroll from "../components/InfiniteScroll.svelte";
     import NoteModal from "../components/NoteModal.svelte";
@@ -11,7 +11,7 @@
     import {navigate} from "svelte-navigator";
     import Navbar from "../components/Navbar.svelte";
 
-    // modal
+    // modals
     let noteModal;
     let categoryModal;
 
@@ -25,22 +25,41 @@
     const limit = 20;
     let offset = 0;
 
-
     // data
-    async function fetchNoteBatch() {
+    const fetchNoteBatch = async () => {
         const data = await DataService.getResource(`/api/notes?offset=${offset}&limit=${limit}`);
         $noteStore = [...$noteStore, ...data.note];
     }
 
-    async function fetchCategories() {
+    const fetchCategories = async () => {
         const res = await DataService.getResource(`/api/categories`);
         $categoryStore = res.categories;
     }
 
-    $: $filteredNoteStore = $noteStore.filter(note => {
-         if (!$selectedCategory) return true;
-         else return note['category_id'] === $selectedCategory?.id
-    });
+    const getNotesByCategory = () => {
+        $searchQuery = "";
+        return filteredNotes = $noteStore.filter(note => {
+            return note['category_id'] === $selectedCategory?.id
+        });
+    }
+
+    const getNotesByQuery = () => {
+        $selectedCategory = null;
+        return filteredNotes = $noteStore.filter(note => {
+            let lowercaseSearchQuery = $searchQuery.toLowerCase();
+            return note.title?.toLowerCase().includes(lowercaseSearchQuery)
+                || note.category_name?.toLowerCase().includes(lowercaseSearchQuery)
+                || note.content?.toLowerCase().includes(lowercaseSearchQuery);
+        });
+    }
+
+    let filtered;
+    let filteredNotes = [];
+
+    $: filtered = !!$selectedCategory || !!$searchQuery.length;
+    $: if ($selectedCategory) getNotesByCategory();
+    $: if ($searchQuery.length) getNotesByQuery();
+
 
     if (!localStorage.getItem('user')) {
         navigate('/login');
@@ -68,16 +87,27 @@
                     {/if}
                 </div>
                 <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 gy-3 position-relative">
-                    {#each $filteredNoteStore as note}
-                        <div class="col">
-                            <Note
-                                    note={note}
-                                    on:noteClicked={(e) => noteModal.show(e.detail.note)}
-                            />
-                        </div>
+                    {#if filtered}
+                        {#each filteredNotes as note}
+                            <div class="col">
+                                <Note
+                                        note={note}
+                                        on:noteClicked={(e) => noteModal.show(e.detail.note)}
+                                />
+                            </div>
+                        {/each}
                     {:else}
-                        <p class="text-muted">Keine Notizen.</p>
-                    {/each}
+                        {#each $noteStore as note}
+                            <div class="col">
+                                <Note
+                                        note={note}
+                                        on:noteClicked={(e) => noteModal.show(e.detail.note)}
+                                />
+                            </div>
+                        {:else}
+                            <p class="text-muted">Keine Notizen.</p>
+                        {/each}
+                    {/if}
                     <InfiniteScroll
                             threshold={100}
                             on:loadMore={() => {offset += limit; fetchNoteBatch()}}/>

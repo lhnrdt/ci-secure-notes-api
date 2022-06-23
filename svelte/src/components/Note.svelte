@@ -1,28 +1,19 @@
 <script>
 
+    import { scale } from 'svelte/transition';
+    import { expoInOut } from 'svelte/easing';
     import {createEventDispatcher} from "svelte";
-    import {searchQuery} from "../stores";
 
     const dispatch = createEventDispatcher();
 
-    export let note;
+    export let note = {};
     let color;
-    let lowercaseSearchQuery;
-    let matches;
 
     $: color = note.color ?? '#fffff';
-    $: {
-        lowercaseSearchQuery = $searchQuery.toLowerCase();
-        if (note.title) matches ||= note.title.toLowerCase().includes(lowercaseSearchQuery);
-        if (note.category_name) matches ||= note.category_name.toLowerCase().includes(lowercaseSearchQuery);
-        matches ||= note.content.toLowerCase().includes(lowercaseSearchQuery);
-        console.log(lowercaseSearchQuery, matches)
-    }
 
 </script>
-
-{#if matches}
     <div class="card note h-100"
+         transition:scale={{duration: 300, easing: expoInOut}}
          on:click={() => dispatch('noteClicked', {note: note})}
          style:background-color={note.color}
     >
@@ -40,8 +31,6 @@
             </div>
         {/if}
     </div>
-{/if}
-
 <style>
     .note {
         transition: 300ms;
