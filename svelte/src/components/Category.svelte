@@ -56,7 +56,7 @@
             >
                 <DashCircleFill fill="red"/>
             </div>
-            <div class="controls d-flex align-items-center"
+            <div class="edit controls d-flex align-items-center"
                  on:click={handleCategoryEdit}
                  class:hidden={!showEditControls}
                  class:me-2={showEditControls}
@@ -116,27 +116,7 @@
         height: 20px;
     }
 
-    .shaking {
-        --rotate-amount: 2deg;
-        animation: shaking infinite 180ms;
-    }
-
     .hidden {
         width: 0;
-    }
-
-    @keyframes shaking {
-
-        25% {
-            transform: rotate(calc(var(--rotate-amount) * -1)) translateX(-1px);
-        }
-
-        75% {
-            transform: rotate(var(--rotate-amount)) translateX(1px);
-        }
-
-        0%, 100% {
-            transform: rotate(0) translateX(0);
-        }
     }
 </style>
