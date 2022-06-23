@@ -4,9 +4,6 @@ namespace App\Models;
 
 use CodeIgniter\Model;
 use Exception;
-use phpDocumentor\Reflection\Types\Boolean;
-use phpDocumentor\Reflection\Types\Null_;
-use ReflectionException;
 
 class NoteModel extends Model
 {
@@ -44,15 +41,34 @@ class NoteModel extends Model
     /**
      * @throws Exception
      */
-    public function findNotesByUser($user, ?int $limit = 0, ?int $offset = 0): array
+    public function findNotesByUser(
+        $user,
+        ?int $limit = 0,
+        ?int $offset = 0,
+        ?int $categoryID = null,
+        ?string $searchQuery = null
+    ): array
     {
-        $this->asArray()
+        $builder = $this->builder();
+        $builder
             ->select('note.*, category.name category_name, category.color')
             ->orderBy('id', 'DESC')
             ->join('category', 'category.id = note.category_id', 'left')
             ->where(['note.user_id' => $user]);
 
+        if ($categoryID) {
+            $builder->where('category.id', $categoryID);
+        }
+        if ($searchQuery) {
+            $builder->groupStart()
+                ->orLike('category.name', $searchQuery)
+                ->orLike('note.content', $searchQuery)
+                ->orLike('note.title', $searchQuery)
+                ->groupEnd();
+        }
+
         $note = $this->findAll($limit, $offset);
+
 
         if (!$note) throw new Exception('No notes found.');
 

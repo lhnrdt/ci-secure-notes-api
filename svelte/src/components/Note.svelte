@@ -15,24 +15,25 @@
     $: if ($searchQuery) content = content.replace($searchQuery, `<mark class="p-0">${$searchQuery}</mark>`);
 
 </script>
-<div class="card note h-100"
-     transition:scale={{duration: 300, easing: expoInOut}}
-     on:click={() => dispatch('noteClicked', {note: note})}
-     style:background-color={note.color}
->
-    <div class="card-body">
-        {#if (note.title)}
-            <h5 class="card-title">
-                {note.title}
-            </h5>
-        {/if}
-        <p>{@html content}</p>
-    </div>
-    {#if (note['category_name'])}
-        <div class="card-footer text-muted">
-            { note['category_name']}
+<div class="col" in:scale={{duration: 300, easing: expoInOut}}>
+    <div class="card note h-100"
+         on:click={() => dispatch('noteClicked', {note: note})}
+         style:background-color={note.color}
+    >
+        <div class="card-body">
+            {#if (note.title)}
+                <h5 class="card-title">
+                    {note.title}
+                </h5>
+            {/if}
+            <p>{@html content}</p>
         </div>
-    {/if}
+        {#if (note['category_name'])}
+            <div class="card-footer text-muted">
+                { note['category_name']}
+            </div>
+        {/if}
+    </div>
 </div>
 <style>
     .note {

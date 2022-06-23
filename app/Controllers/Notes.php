@@ -5,7 +5,6 @@ namespace App\Controllers;
 use App\Models\NoteModel;
 use CodeIgniter\HTTP\ResponseInterface;
 use Exception;
-use phpDocumentor\Reflection\Types\This;
 use ReflectionException;
 
 class Notes extends BaseController
@@ -21,11 +20,13 @@ class Notes extends BaseController
 
             $limit = $_GET['limit'] ?? 0;
             $offset = $_GET['offset'] ?? 0;
+            $categoryId = $_GET['category'] ?? null;
+            $searchQuery = $_GET['q'] ?? null;
 
             return $this->getResponse(
                 [
                     'message' => 'User\'s notes retrieved successfully',
-                    'note' => $model->findNotesByUser($userID, $limit, $offset)
+                    'note' => $model->findNotesByUser($userID, $limit, $offset, $categoryId, $searchQuery),
                 ]
             );
         } catch (Exception $e) {

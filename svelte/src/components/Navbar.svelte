@@ -12,6 +12,23 @@
     let showLoginNav;
     $: showLoginNav = ['/login', '/register'].includes($location.pathname);
 
+    let query;
+    let timeout = null;
+    let queryWaiting = false;
+    const MIN_TIME_BETWEEN_SEARCH_MS = 1000;
+
+    const checkUpdateQuery = () => {
+        if (!timeout) {
+            timeout = setTimeout(() => {
+                $searchQuery = query;
+                timeout = null;
+                console.log("released")
+            }, MIN_TIME_BETWEEN_SEARCH_MS);
+        } else {
+            console.log("waiting")
+        }
+    }
+
 
     async function handleLogout() {
         $noteStore = [];
@@ -55,7 +72,8 @@
                                 autocomplete="off"
                                 type="search"
                                 placeholder="Suche"
-                                bind:value={$searchQuery}
+                                bind:value={query}
+                                on:input={checkUpdateQuery}
                         />
                     </div>
                     <div class="position-relative ms-auto">
