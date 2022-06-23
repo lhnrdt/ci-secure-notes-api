@@ -92,10 +92,10 @@
 <Navbar/>
 <div class="container-fluid">
     <div class="row flex-nowrap">
-        <div class="col-3 px-sm-2 px-0 bg-light position-fixed">
+        <div class="col-2 col-md-3 col-lg-2 px-sm-2 px-0 bg-light position-fixed">
             <Sidebar modal={categoryModal}/>
         </div>
-        <div class="col offset-3">
+        <div class="col offset-2 offset-md-3 offset-lg-2">
             <main class="container my-3 px-0 px-md-3">
                 <div class="row">
                     {#if ($selectedCategory)}
