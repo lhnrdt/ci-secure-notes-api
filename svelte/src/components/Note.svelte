@@ -1,36 +1,39 @@
 <script>
 
-    import { scale } from 'svelte/transition';
-    import { expoInOut } from 'svelte/easing';
+    import {scale} from 'svelte/transition';
+    import {expoInOut} from 'svelte/easing';
     import {createEventDispatcher} from "svelte";
+    import {searchQuery} from "../stores";
 
     const dispatch = createEventDispatcher();
 
     export let note = {};
-    let color;
+    let color, content;
 
     $: color = note.color ?? '#fffff';
+    $: content = note.content;
+    $: if ($searchQuery) content = content.replace($searchQuery, `<mark class="p-0">${$searchQuery}</mark>`);
 
 </script>
-    <div class="card note h-100"
-         transition:scale={{duration: 300, easing: expoInOut}}
-         on:click={() => dispatch('noteClicked', {note: note})}
-         style:background-color={note.color}
-    >
-        <div class="card-body">
-            {#if (note.title)}
-                <h5 class="card-title">
-                    {note.title}
-                </h5>
-            {/if}
-            <p>{note.content}</p>
-        </div>
-        {#if (note['category_name'])}
-            <div class="card-footer text-muted">
-                {note['category_name']}
-            </div>
+<div class="card note h-100"
+     transition:scale={{duration: 300, easing: expoInOut}}
+     on:click={() => dispatch('noteClicked', {note: note})}
+     style:background-color={note.color}
+>
+    <div class="card-body">
+        {#if (note.title)}
+            <h5 class="card-title">
+                {note.title}
+            </h5>
         {/if}
+        <p>{@html content}</p>
     </div>
+    {#if (note['category_name'])}
+        <div class="card-footer text-muted">
+            { note['category_name']}
+        </div>
+    {/if}
+</div>
 <style>
     .note {
         transition: 300ms;
@@ -42,5 +45,4 @@
         box-shadow: 1px 2px 0 rgb(60 64 67 / 30%), 0 1px 3px 1px rgb(60 64 67 / 15%);
         cursor: pointer;
     }
-
 </style>
