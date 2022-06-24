@@ -1,7 +1,13 @@
 <script>
     import {onMount} from "svelte";
     import {DataService} from "../services/DataService";
-    import {noteStore, categoryStore, selectedCategory, searchQuery} from "../stores";
+    import {
+        noteStore,
+        categoryStore,
+        selectedCategory,
+        searchQuery,
+        NOTES_PER_REQUEST, timeout
+    } from "../stores";
     import Note from "../components/Note.svelte";
     import NoteModal from "../components/NoteModal.svelte";
     import AddButton from "../components/AddButton.svelte";
@@ -9,10 +15,14 @@
     import CategoryModal from "../components/CategoryModal.svelte";
     import {navigate} from "svelte-navigator";
     import Navbar from "../components/Navbar.svelte";
+    import NoteSkeleton from "../components/skeletons/NoteSkeleton.svelte";
 
     // modals
     let noteModal;
     let categoryModal;
+    let hasMore = true;
+    let loadingMore = false;
+
 
     const emptyNote = {
         category_id: 'NULL',
@@ -20,69 +30,53 @@
         content: '',
     }
 
-    // infinite scroll
-    const LIMIT_NOTES_PER_REQUEST = 5;
-    let offset = 0;
-
-    const onScroll = () => {
+    const onScroll = async () => {
         const {
             scrollTop,
             scrollHeight,
             clientHeight
         } = document.documentElement;
+        const offset = 1;
 
-        if (scrollTop + clientHeight >= scrollHeight) {
-            fetchNoteBatch()
+        if (hasMore && !loadingMore && scrollTop + clientHeight >= scrollHeight - offset) {
+            loadingMore = true;
+            const res = await noteStore.getMore($searchQuery, $selectedCategory?.id);
+            if (!!res.note.length) noteStore.add(res.note);
+            hasMore = res['hasMore']
+            loadingMore = false;
         }
     }
 
-    const clearNotes = () => {
-        offset = 0;
-        $noteStore = [];
+
+    const fetchCategories = () => {
+        $categoryStore = DataService.getResource(`/api/categories`).then(json => json.categories);
     }
 
-    const fetchNoteBatch = async () => {
-        console.log("fetching notes", offset, '-', offset + LIMIT_NOTES_PER_REQUEST);
-        let url = `/api/notes?offset=${offset}&limit=${LIMIT_NOTES_PER_REQUEST}`;
-
-        if ($searchQuery.length) url += `&q=${$searchQuery}`;
-        if ($selectedCategory) url += `&category=${$selectedCategory.id}`;
-
-        const data = await DataService.getResource(url);
-        $noteStore = [...$noteStore, ...data.note];
-        offset += LIMIT_NOTES_PER_REQUEST;
-        return !!data.note.length;
-    }
-
-    const fetchCategories = async () => {
-        const res = await DataService.getResource(`/api/categories`);
-        $categoryStore = res.categories;
-    }
-
-    const fillScreen = () => {
+    const fillScreen = async () => {
         const isScrolled = window.innerHeight < document.body.clientHeight;
-        console.log('isScrolled', isScrolled)
         if (!isScrolled) {
-            fetchNoteBatch().then((hasResult) => {
-                if (hasResult) fillScreen();
-            });
-        } else {
-            fetchNoteBatch();
+            const res = await noteStore.getMore($searchQuery, $selectedCategory?.id);
+            if (!!res.note.length) noteStore.add(res.note);
+            if (res['hasMore']) await fillScreen();
+            loadingMore = false;
         }
     }
 
-    $:  {
-        $selectedCategory;
-        $searchQuery;
-        clearNotes();
-        fetchNoteBatch().then(fillScreen);
+    const initNotes = async (searchQuery, categoryID) => {
+        loadingMore = true;
+        await noteStore.init(searchQuery, categoryID)
+            .then(() => loadingMore = false)
+            .then(fillScreen);
     }
+
+    $:  initNotes($searchQuery, $selectedCategory?.id);
+
 
     if (!localStorage.getItem('user')) {
         navigate('/login');
     } else {
-        onMount(() => {
-            fetchCategories();
+        onMount(async () => {
+            await fetchCategories();
         });
     }
 </script>
@@ -105,13 +99,20 @@
                     {/if}
                 </div>
                 <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 gy-3 position-relative">
-                    {#each $noteStore as note}
-                        <Note note={note}
-                              on:noteClicked={(e) => noteModal.show(e.detail.note)}
-                        />
-                    {:else}
-                        <p class="text-muted">Keine Notizen.</p>
-                    {/each}
+                    {#if (!$timeout)}
+                        {#each $noteStore as noteBatch}
+                            {#each noteBatch as note}
+                                <Note note={note} on:noteClicked={(e) => noteModal.show(e.detail.note)}/>
+                            {/each}
+                        {:else}
+                            {#if !loadingMore} <p class="text-muted">Keine Notizen.</p> {/if}
+                        {/each}
+                    {/if}
+                    {#if loadingMore || $timeout}
+                        {#each Array(NOTES_PER_REQUEST) as _}
+                            <NoteSkeleton/>
+                        {/each}
+                    {/if}
                 </div>
 
                 <AddButton text={"+ Neue Notiz"} on:click={() => noteModal.show(emptyNote)}/>

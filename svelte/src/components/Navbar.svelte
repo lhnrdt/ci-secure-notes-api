@@ -2,35 +2,29 @@
 
     import {AuthService} from '../services/AuthService';
     import {Utils} from "../services/Utils";
-    import {noteStore, categoryStore, selectedCategory, searchQuery} from "../stores";
+    import {noteStore, categoryStore, selectedCategory, searchQuery, timeout} from "../stores";
     import {navigate, link, useLocation} from "svelte-navigator";
     import {PersonFill, Search} from 'svelte-bootstrap-icons';
+    import {Stretch} from "svelte-loading-spinners";
 
+    const MIN_TIME_BETWEEN_SEARCH_MS = 2000;
     const location = useLocation();
     const user = Utils.getUser();
 
-    let showLoginNav;
+    let showLoginNav, query;
+
     $: showLoginNav = ['/login', '/register'].includes($location.pathname);
 
-    let query;
-    let timeout = null;
-    let queryWaiting = false;
-    const MIN_TIME_BETWEEN_SEARCH_MS = 1000;
-
     const checkUpdateQuery = () => {
-        if (!timeout) {
-            timeout = setTimeout(() => {
+        if (!$timeout) {
+            $timeout = setTimeout(() => {
                 $searchQuery = query;
-                timeout = null;
-                console.log("released")
+                $timeout = null;
             }, MIN_TIME_BETWEEN_SEARCH_MS);
-        } else {
-            console.log("waiting")
         }
     }
 
-
-    async function handleLogout() {
+    const handleLogout = async () => {
         $noteStore = [];
         $categoryStore = [];
         $selectedCategory = null;
@@ -62,11 +56,13 @@
                     </ul>
                 {:else}
                     <div class="input-group me-3">
-                        <button
-                                class="input-group-text text-white border-0 bg-transparent"
-                        >
-                            <Search/>
-                        </button>
+                        <span class="search-icon input-group-text text-white border-0 bg-transparent d-flex align-items-center p-0 justify-content-center">
+                            {#if ($timeout)}
+                                <Stretch size="14" unit="px" color="white"/>
+                            {:else}
+                                <Search/>
+                            {/if}
+                        </span>
                         <input
                                 class="form-control border-0 border-bottom bg-dark text-white"
                                 autocomplete="off"
@@ -97,3 +93,9 @@
         </div>
     </nav>
 </header>
+
+<style>
+    .search-icon {
+        width: 40px;
+    }
+</style>

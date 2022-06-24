@@ -2,6 +2,7 @@
     import {DataService} from "../services/DataService";
     import {noteStore, categoryStore} from "../stores";
     import {Utils} from "../services/Utils";
+    import CategorySkeleton from "./skeletons/CategorySkeleton.svelte";
 
     let modal;
     export let noteData;
@@ -9,7 +10,8 @@
 
     let newNote;
     $: newNote = !noteData?.id;
-    $: color = $categoryStore.find(c => c.id === noteData?.category_id)?.color || '#ffffff';
+
+    $: color =  '#ffffff';
 
     export const show = (note) => {
         jQuery(modal).modal('show');
@@ -82,11 +84,19 @@
                                 bind:value={noteData.category_id}
                         >
                             <option value="NULL" selected class="default-category">keine Kategorie</option>
-                            {#each $categoryStore as category}
-                                <option value={category.id} style:background-color={category.color}>
-                                    {category.name}
-                                </option>
-                            {/each}
+                            {#await $categoryStore}
+                                {#each Array(5) as _}
+                                    <CategorySkeleton/>
+                                {/each}
+                            {:then categories}
+                                {#each categories as category}
+                                    <option value={category.id} style:background-color={category.color}>
+                                        {category.name}
+                                    </option>
+                                {:else}
+                                    <p>keine Kategorien</p>
+                                {/each}
+                            {/await}
                         </select>
                     </div>
                 </div>

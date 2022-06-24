@@ -2,6 +2,7 @@
     import {categoryStore, selectedCategory} from "../stores";
     import Category from "./Category.svelte";
     import {Pencil, BookmarkPlus} from 'svelte-bootstrap-icons';
+    import CategorySkeleton from "./skeletons/CategorySkeleton.svelte";
 
     export let modal;
     let showEditControls = false;
@@ -29,16 +30,22 @@
         <span class="fs-5">Kategorien</span>
     </div>
     <ul class="nav nav-pills flex-column mb-0 align-items-center align-items-md-start w-100 overflow-auto">
-        {#each $categoryStore as category}
-            <Category {category}
-                      on:editCategory={handleEditCategory}
-                      clickFunction={handleSelectCategory}
-                      active={(category === $selectedCategory)}
-                      {showEditControls}
-            />
-        {:else}
-            <p>keine Kategorien</p>
-        {/each}
+        {#await $categoryStore}
+            {#each Array(5) as _}
+                <CategorySkeleton/>
+            {/each}
+        {:then categories}
+            {#each categories as category}
+                <Category {category}
+                          on:editCategory={handleEditCategory}
+                          clickFunction={handleSelectCategory}
+                          active={(category === $selectedCategory)}
+                          {showEditControls}
+                />
+            {:else}
+                <p>keine Kategorien</p>
+            {/each}
+        {/await}
     </ul>
     <hr class="w-100 mb-0">
     <div class="d-flex flex-wrap justify-content-evenly w-100">
@@ -70,8 +77,4 @@
         margin-inline-end: 0;
     }
 
-    .skeleton {
-        background: lightgray;
-        width: 5em;
-    }
 </style>

@@ -67,14 +67,8 @@ class NoteModel extends Model
                 ->groupEnd();
         }
 
-        $note = $this->findAll($limit, $offset);
-
-
-        if (!$note) throw new Exception('No notes found.');
-
-        return $note;
+        return $this->findAll($limit, $offset);
     }
-
 
     /**
      * @throws Exception

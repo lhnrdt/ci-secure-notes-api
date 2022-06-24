@@ -17,7 +17,6 @@ function createDataService() {
             return await refreshToken(() => getResource(url))
         }
 
-
     }
 
     async function postResource(url, formData) {
