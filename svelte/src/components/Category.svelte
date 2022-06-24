@@ -43,11 +43,11 @@
     on:click={() => clickFunction(category)}
 >
     <a class="nav-link align-middle text-md-start px-2 py-3 py-md-2
-    d-flex align-items-center justify-content-center justify-content-md-start"
+    d-flex align-items-center"
        class:active aria-current="page"
        title={category.name}
     >
-        <div class="d-flex align-items-center w-100">
+        <div class="d-flex align-items-center w-100 justify-content-center justify-content-md-start">
             <div class="controls d-flex align-items-center"
                  on:click={handleCategoryDelete}
                  class:hidden={!showEditControls}
