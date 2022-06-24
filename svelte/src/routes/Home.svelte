@@ -65,8 +65,13 @@
     const initNotes = async (searchQuery, categoryID) => {
         loadingMore = true;
         await noteStore.init(searchQuery, categoryID)
-            .then(() => loadingMore = false)
-            .then(fillScreen);
+            .then((res) => {
+                loadingMore = false;
+                return res;
+            })
+            .then(res => {
+                if (res['hasMore']) fillScreen();
+            });
     }
 
     $:  initNotes($searchQuery, $selectedCategory?.id);
