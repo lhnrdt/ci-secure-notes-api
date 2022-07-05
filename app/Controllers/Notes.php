@@ -23,20 +23,21 @@ class Notes extends BaseController
             $categoryId = $_GET['category'] ?? null;
             $searchQuery = $_GET['q'] ?? null;
 
-            $nextBatch = $model->findNotesByUser($userID, $limit, $offset + $limit, $categoryId, $searchQuery);
+            $batch = $model->findNotesByUser($userID, $limit, $offset, $categoryId, $searchQuery);
 
             return $this->getResponse(
                 [
                     'message' => 'User\'s notes retrieved successfully',
-                    'note' => $model->findNotesByUser($userID, $limit, $offset, $categoryId, $searchQuery),
-                    'hasMore' => count($nextBatch) > 0
+                    'note' => $batch['note'],
+                    'hasMore' => $batch['hasMore']
                 ]
             );
         } catch (Exception $e) {
             return $this->getResponse(
                 [
                     'message' => $e->getMessage(),
-                    'note' => []
+                    'note' => [],
+                    'hasMore' => false
                 ]
             );
         }

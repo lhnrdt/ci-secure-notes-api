@@ -66,8 +66,10 @@ class NoteModel extends Model
                 ->orLike('note.title', $searchQuery)
                 ->groupEnd();
         }
-
-        return $this->findAll($limit, $offset);
+        return [
+            'note' => $this->findAll($limit, $offset),
+            'hasMore' => count($this->findAll($limit, $offset + $limit)) > 0
+        ];
     }
 
     /**
