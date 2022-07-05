@@ -43,7 +43,7 @@ class Auth extends BaseController
 
     private function getJWTForUser(
         string $emailAddress,
-        int $responseCode = ResponseInterface::HTTP_OK
+        int    $responseCode = ResponseInterface::HTTP_OK
     ): ResponseInterface
     {
         try {
@@ -55,12 +55,7 @@ class Auth extends BaseController
 
             set_cookie('refresh_token',
                 getSignedRefreshJWTForUser($user),
-                '',
-                '',
-                '/',
-                '',
-                false,
-                true
+                '', '', '/', '', false, true
             );
 
             unset($user["password"]);
