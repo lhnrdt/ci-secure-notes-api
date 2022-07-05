@@ -59,7 +59,13 @@
     <div class="modal-dialog" role="document">
         <div class="modal-content" style:background-color={color}>
             <div class="modal-header">
-                <h5 class="modal-title">Notiz bearbeiten</h5>
+                <h5 class="modal-title">
+                    {#if newNote}
+                        Notiz erstellen
+                    {:else }
+                        Notiz bearbeiten
+                    {/if}
+                </h5>
                 <button on:click={hide} type="button" class="close custom-close" data-dismiss="modal" aria-label="Close"
                         style:background-color={color}
                 >

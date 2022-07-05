@@ -55,8 +55,9 @@
                         </li>
                     </ul>
                 {:else}
-                    <div class="input-group me-3">
-                        <span class="search-icon input-group-text text-white border-0 bg-transparent d-flex align-items-center p-0 justify-content-center">
+                    <div class="input-group me-3 mb-3 mb-md-0">
+                        <span class="search-icon input-group-text text-white border-0 bg-transparent d-flex
+                         align-items-center p-0 justify-content-center">
                             {#if ($timeout)}
                                 <Stretch size="14" unit="px" color="white"/>
                             {:else}
@@ -72,8 +73,9 @@
                                 on:input={checkUpdateQuery}
                         />
                     </div>
-                    <div class="position-relative ms-auto">
-                        <a class="d-flex align-items-center text-white text-decoration-none dropdown-toggle"
+                    <div class="position-relative">
+                        <a class="d-flex align-items-center justify-content-center justify-content-md-start
+                        text-white text-decoration-none dropdown-toggle"
                            id="dropdownUser1" data-bs-toggle="dropdown" aria-expanded="false">
                             <div class="d-inline-block">
                                 <PersonFill/>
