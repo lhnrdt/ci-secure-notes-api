@@ -23,9 +23,6 @@
     let hasMore = true;
     let loadingMore = false;
 
-    $: console.log('$noteStore updated: ', $noteStore);
-    $: console.log('$categoryStore updated: ', $categoryStore);
-
     const emptyNote = {
         category_id: 'NULL',
         title: '',
