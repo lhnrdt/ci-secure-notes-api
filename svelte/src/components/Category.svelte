@@ -18,7 +18,7 @@
             DataService.deleteResource(`/api/categories/${category.id}`);
 
             // delete from currently shown categories
-            $categoryStore = $categoryStore.filter(cat => cat.id !== category.id);
+            $categoryStore = $categoryStore.then(cs => cs.filter(cat => cat.id !== category.id));
 
             // remove category from notes
             $noteStore.forEach(n => {

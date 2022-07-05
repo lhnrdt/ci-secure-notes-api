@@ -75,7 +75,7 @@ const createDataService = () => {
 
 
     // wrapper functions for specific resources
-    const createNote = async formData => await postResource(`/api/notes/`, formData);
+    const createNote = async formData => await postResource(`/api/notes`, formData);
     const updateNote = async (id, formData) => await postResource(`/api/notes/${id}`, formData);
     const deleteNote = async id => await deleteResource(`/api/notes/${id}`);
 

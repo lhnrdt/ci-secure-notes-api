@@ -37,7 +37,7 @@
         if (newCategory) {
             const res = await DataService.postResource('/api/categories', formData);
             // add to local categories
-            $categoryStore = [...$categoryStore, res.category];
+            $categoryStore = $categoryStore.then(cs => [...cs, res.category]);
         } else {
             const res = await DataService.postResource(`/api/categories/${categoryData.id}`, formData);
             // update local categories

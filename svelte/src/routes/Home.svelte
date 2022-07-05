@@ -68,6 +68,7 @@
             if (!!res.note.length) noteStore.add(res.note);
             if (res['hasMore']) await fillScreen();
         }
+        loadingMore = false;
     }
 
     // initialize notes => load new notes and start filling the screen
