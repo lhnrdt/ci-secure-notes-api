@@ -25,7 +25,7 @@
     }
 
     const handleLogout = async () => {
-        $noteStore = [];
+        noteStore.set([]);
         $categoryStore = [];
         $selectedCategory = null;
         await AuthService.logout();

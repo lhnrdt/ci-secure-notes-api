@@ -4,7 +4,7 @@ import {DataService} from "./services/DataService";
 export const searchQuery = writable("");
 export const categoryStore = writable([]);
 export const selectedCategory = writable(null);
-export const NOTES_PER_REQUEST = 20;
+export const NOTES_PER_REQUEST = 5;
 export const timeout = writable(null);
 
 export const createNoteStore = () => {
@@ -38,7 +38,8 @@ export const createNoteStore = () => {
         subscribe,
         init,
         getMore,
-        add
+        add,
+        set
     }
 }
 
