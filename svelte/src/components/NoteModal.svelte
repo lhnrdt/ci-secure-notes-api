@@ -4,16 +4,19 @@
     import {Utils} from "../services/Utils";
     import CategorySkeleton from "./skeletons/CategorySkeleton.svelte";
 
-    let modal;
     export let noteData;
+    let modal;
     let color;
-
     let newNote;
+
     $: newNote = !noteData?.id;
 
-    $: color =  '#ffffff';
+    const updateColor = async () => {
+        color = await $categoryStore.then(cs => cs.find(c => c.id === noteData?.category_id)?.color ?? '#ffffff');
+    }
 
     export const show = (note) => {
+        updateColor();
         jQuery(modal).modal('show');
         if (!note.category_id) note.category_id = 'NULL';
         noteData = note;
@@ -82,6 +85,7 @@
                         <select name="category_id" class="form-select" aria-label="Color"
                                 style:background-color={color}
                                 bind:value={noteData.category_id}
+                                on:change={updateColor}
                         >
                             <option value="NULL" selected class="default-category">keine Kategorie</option>
                             {#await $categoryStore}

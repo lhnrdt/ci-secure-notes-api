@@ -7,6 +7,7 @@ export const selectedCategory = writable(null);
 export const NOTES_PER_REQUEST = 5;
 export const timeout = writable(null);
 
+
 export const createNoteStore = () => {
     const {subscribe, update, set} = writable([])
     const limit = NOTES_PER_REQUEST;
@@ -21,7 +22,6 @@ export const createNoteStore = () => {
     }
 
     const getMore = async (searchQuery = "", categoryID = null) => {
-
         let url = `/api/notes?offset=${offset}&limit=${limit}`;
         if (searchQuery.length) url += `&q=${searchQuery}`;
         if (categoryID) url += `&category=${categoryID}`;
@@ -31,7 +31,7 @@ export const createNoteStore = () => {
     }
 
     const add = (noteBatch) => {
-        update(notes => [...notes, noteBatch]);
+        update(notes => [...notes, ...noteBatch]);
     }
 
     return {
@@ -43,4 +43,4 @@ export const createNoteStore = () => {
     }
 }
 
-export const noteStore = createNoteStore()
+export const noteStore = createNoteStore();

@@ -23,6 +23,8 @@
     let hasMore = true;
     let loadingMore = false;
 
+    $: console.log('$noteStore updated: ', $noteStore);
+    $: console.log('$categoryStore updated: ', $categoryStore);
 
     const emptyNote = {
         category_id: 'NULL',
@@ -46,7 +48,6 @@
             loadingMore = false;
         }
     }
-
 
     const fetchCategories = () => {
         $categoryStore = DataService.getResource(`/api/categories`).then(json => json.categories);
@@ -105,10 +106,8 @@
                 </div>
                 <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 gy-3 position-relative">
                     {#if (!$timeout)}
-                        {#each $noteStore as noteBatch}
-                            {#each noteBatch as note}
-                                <Note note={note} on:noteClicked={(e) => noteModal.show(e.detail.note)}/>
-                            {/each}
+                        {#each $noteStore as note}
+                            <Note note={note} on:noteClicked={(e) => noteModal.show(e.detail.note)}/>
                         {:else}
                             {#if !loadingMore} <p class="text-muted">Keine Notizen.</p> {/if}
                         {/each}

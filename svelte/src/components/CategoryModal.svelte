@@ -1,7 +1,7 @@
 <script>
     import {Utils} from "../services/Utils";
     import {DataService} from "../services/DataService";
-    import {categoryStore} from "../stores";
+    import {categoryStore, noteStore} from "../stores";
 
 
     const SELECTABLE_COLORS = ["#fbb4ae", "#b3cde3", "#ccebc5", "#decbe4", "#fed9a6", "#ffffcc", "#e5d8bd", "#fddaec", "#f2f2f2"];
@@ -38,7 +38,14 @@
             $categoryStore = [...$categoryStore, res.category];
         } else {
             const res = await DataService.postResource(`/api/categories/${categoryData.id}`, formData);
-            $categoryStore = $categoryStore.map(cat => res.category.id === cat.id ? res.category : cat);
+            $categoryStore = $categoryStore.then(cs => cs.map(cat => res.category.id === cat.id ? res.category : cat));
+            $noteStore = $noteStore.map(note => {
+                if (res.category.id === note.category_id) {
+                    note.category_name = res.category.name;
+                    note.color = res.category.color;
+                }
+                return note;
+            })
         }
         hide();
     }
