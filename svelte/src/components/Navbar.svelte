@@ -15,6 +15,8 @@
 
     $: showLoginNav = ['/login', '/register'].includes($location.pathname);
 
+    // check if minimum time since last query has passed and update query if so
+    // prevents too many server requests when user is typing fast
     const checkUpdateQuery = () => {
         if (!$timeout) {
             $timeout = setTimeout(() => {
@@ -24,6 +26,7 @@
         }
     }
 
+    // clears tokens, local notes and local categories
     const handleLogout = async () => {
         noteStore.set([]);
         $categoryStore = [];

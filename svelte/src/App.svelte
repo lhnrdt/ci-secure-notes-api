@@ -1,10 +1,13 @@
 <script>
 
     import Home from "./routes/Home.svelte";
-    import {Router, Route, useLocation} from "svelte-navigator";
+    import {Router, Route} from "svelte-navigator";
     import Register from "./routes/Register.svelte";
     import Login from "./routes/Login.svelte";
     import {BootstrapToast, ToastContainer} from "svelte-toasts";
+
+    // handle routing with svelte-navigator
+    // add toast container for notifications
 </script>
 
 <Router>

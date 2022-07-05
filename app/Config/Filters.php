@@ -19,10 +19,10 @@ class Filters extends BaseConfig
      * @var array
      */
     public $aliases = [
-        'csrf'          => CSRF::class,
-        'toolbar'       => DebugToolbar::class,
-        'honeypot'      => Honeypot::class,
-        'invalidchars'  => InvalidChars::class,
+        'csrf' => CSRF::class,
+        'toolbar' => DebugToolbar::class,
+        'honeypot' => Honeypot::class,
+        'invalidchars' => InvalidChars::class,
         'secureheaders' => SecureHeaders::class,
         'auth' => JWTAuthenticationFilter::class
     ];
@@ -66,6 +66,7 @@ class Filters extends BaseConfig
      *
      * @var array
      */
+    // Authenticate before making any api calls
     public $filters = [
         'auth' => [
             'before' => [

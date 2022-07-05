@@ -53,7 +53,7 @@ if (file_exists(APPPATH . 'Config/' . ENVIRONMENT . '/Routes.php')) {
 }
 
 /*
- *  Notes
+ *  Api routing, everything else is routed by the frontend application
  *
  */
 

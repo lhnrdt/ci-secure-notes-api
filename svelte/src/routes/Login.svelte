@@ -4,6 +4,9 @@
     import {toasts} from "svelte-toasts";
     import Navbar from "../components/Navbar.svelte";
 
+    /**
+     * Sends authentication request and redirects to home
+     * */
     const handleLogin = async (e) => {
         let formData = new FormData(e.target);
 
@@ -13,7 +16,6 @@
         } catch (e) {
             toasts.error(e.message);
         }
-
     }
 
 </script>

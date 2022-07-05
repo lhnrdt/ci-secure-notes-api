@@ -39,6 +39,7 @@ class UserModel extends Model
         return $this->getDataWithHashedPassword($data);
     }
 
+    // hashes the password before inserting into database
     private function getDataWithHashedPassword($data): array
     {
         if (isset($data['data']['password'])) {
@@ -48,6 +49,7 @@ class UserModel extends Model
         return $data;
     }
 
+    // password hash
     private function hashPassword(string $plaintextPassword): string
     {
         return password_hash($plaintextPassword, PASSWORD_BCRYPT);

@@ -6,16 +6,21 @@
 
     export let category;
     export let active = false;
-    export let clickFunction = () => {
-    };
+    export let clickFunction = () => {};
 
     export let showEditControls = false;
     const dispatch = createEventDispatcher();
 
+    // handle deleting a category
     const deleteCategory = (category) => {
         if (confirm('Wirklich löschen?')) {
+            // delete from database
             DataService.deleteResource(`/api/categories/${category.id}`);
+
+            // delete from currently shown categories
             $categoryStore = $categoryStore.filter(cat => cat.id !== category.id);
+
+            // remove category from notes
             $noteStore.forEach(n => {
                 if (n.category_id === category.id) {
                     n.category_id = null;
@@ -34,6 +39,7 @@
 
     const handleCategoryEdit = (e) => {
         e.stopPropagation();
+        // dispatch event to inform sidebar to open modal
         dispatch('editCategory', {category: category});
     }
 

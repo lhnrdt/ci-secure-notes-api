@@ -6,7 +6,8 @@
         categoryStore,
         selectedCategory,
         searchQuery,
-        NOTES_PER_REQUEST, timeout
+        NOTES_PER_REQUEST,
+        timeout
     } from "../stores";
     import Note from "../components/Note.svelte";
     import NoteModal from "../components/NoteModal.svelte";
@@ -20,48 +21,60 @@
     // modals
     let noteModal;
     let categoryModal;
+
+    // controls lazy loading of new notes
     let hasMore = true;
     let loadingMore = false;
 
-    const emptyNote = {
+    // note template to use when creating a new note
+    const EMPTY_NOTE = {
         category_id: 'NULL',
         title: '',
         content: '',
     }
 
+    // load more content, when user has reached bottom of the page
     const onScroll = async () => {
+        const OFFSET = 1;
         const {
             scrollTop,
             scrollHeight,
             clientHeight
         } = document.documentElement;
-        const offset = 1;
 
-        if (hasMore && !loadingMore && scrollTop + clientHeight >= scrollHeight - offset) {
+        if (hasMore && !loadingMore && scrollTop + clientHeight >= scrollHeight - OFFSET) {
+            // prevent loading content twice if the last request has not finished yet
             loadingMore = true;
+
             const res = await noteStore.getMore($searchQuery, $selectedCategory?.id);
             if (!!res.note.length) noteStore.add(res.note);
             hasMore = res['hasMore']
+
             loadingMore = false;
         }
     }
 
+    // load the categories from database and store as promise
     const fetchCategories = () => {
         $categoryStore = DataService.getResource(`/api/categories`).then(json => json.categories);
     }
 
+    // if page is not scrolled, load more content recursively if available until screen is full
     const fillScreen = async () => {
         const isScrolled = window.innerHeight < document.body.clientHeight;
         if (!isScrolled) {
+            loadingMore = true;
             const res = await noteStore.getMore($searchQuery, $selectedCategory?.id);
             if (!!res.note.length) noteStore.add(res.note);
             if (res['hasMore']) await fillScreen();
-            loadingMore = false;
         }
     }
 
+    // initialize notes => load new notes and start filling the screen
     const initNotes = async (searchQuery, categoryID) => {
         loadingMore = true;
+        hasMore = true;
+
         await noteStore.init(searchQuery, categoryID)
             .then((res) => {
                 loadingMore = false;
@@ -71,10 +84,11 @@
                 if (res['hasMore']) fillScreen();
             });
     }
-
+    // if search query or selected category changes reinitialize notes
     $:  initNotes($searchQuery, $selectedCategory?.id);
 
 
+    // redirect to /login if user is not logged in
     if (!localStorage.getItem('user')) {
         navigate('/login');
     } else {
@@ -116,11 +130,11 @@
                     {/if}
                 </div>
 
-                <AddButton text={"+ Neue Notiz"} on:click={() => noteModal.show(emptyNote)}/>
+                <AddButton on:click={() => noteModal.show(EMPTY_NOTE)}/>
             </main>
 
         </div>
     </div>
 </div>
-<NoteModal bind:this={noteModal} noteData={emptyNote}/>
+<NoteModal bind:this={noteModal} noteData={EMPTY_NOTE}/>
 <CategoryModal bind:this={categoryModal}/>

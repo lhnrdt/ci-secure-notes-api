@@ -7,21 +7,10 @@
     export let modal;
     let showEditControls = false;
 
-    const handleSelectCategory = (category) => {
-        const alreadySelected = $selectedCategory === category;
-        $selectedCategory = alreadySelected ? null : category;
-    };
-
-    const handleAddCategory = async () => {
-        modal.show();
-    };
-
-    const toggleEditControls = () => {
-        showEditControls = !showEditControls;
-    }
-    const handleEditCategory = (e) => {
-        modal.show(e.detail.category);
-    };
+    const handleSelectCategory = category => $selectedCategory = $selectedCategory === category ? null : category;
+    const handleAddCategory = async () => modal.show();
+    const toggleEditControls = () => showEditControls = !showEditControls;
+    const handleEditCategory = (e) => modal.show(e.detail.category);
 
 </script>
 

@@ -10,7 +10,6 @@ class CategoryModel extends Model
     protected $table = 'category';
     protected $primaryKey = 'id';
 
-
     protected $returnType = 'array';
     protected $useAutoIncrement = true;
 

@@ -1,3 +1,4 @@
+<!--suppress JSUnresolvedFunction -->
 <script>
     import {Utils} from "../services/Utils";
     import {DataService} from "../services/DataService";
@@ -14,20 +15,20 @@
     let categoryData = EMPTY_CATEGORY;
     $: newCategory = !categoryData?.id;
 
+    // open the modal bootstrap style
     export const show = (category) => {
-        if (category) {
-            categoryData = category;
-        }
+        if (category) categoryData = category;
         jQuery(modal).modal('show');
     }
 
+    // hide the modal bootstrap style
     export const hide = () => {
         jQuery(modal).modal('hide');
         categoryData = EMPTY_CATEGORY;
     }
 
+    // submit changes to database
     const handleSubmit = async (e) => {
-
         const formData = new FormData(e.target);
         const user = Utils.getUser();
 
@@ -35,10 +36,13 @@
 
         if (newCategory) {
             const res = await DataService.postResource('/api/categories', formData);
+            // add to local categories
             $categoryStore = [...$categoryStore, res.category];
         } else {
             const res = await DataService.postResource(`/api/categories/${categoryData.id}`, formData);
+            // update local categories
             $categoryStore = $categoryStore.then(cs => cs.map(cat => res.category.id === cat.id ? res.category : cat));
+            // update local notes to accommodate changes to the categories
             $noteStore = $noteStore.map(note => {
                 if (res.category.id === note.category_id) {
                     note.category_name = res.category.name;

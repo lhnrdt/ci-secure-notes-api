@@ -14,10 +14,13 @@ class JWTAuthenticationFilter implements FilterInterface
     use ResponseTrait;
 
     /**
+     * Checks if the request contains a valid, non expired jwt token
+     *
      * @inheritDoc
      */
     public function before(RequestInterface $request, $arguments = null)
     {
+
         $authenticationHeader = $request->getServer('HTTP_AUTHORIZATION');
 
         try {

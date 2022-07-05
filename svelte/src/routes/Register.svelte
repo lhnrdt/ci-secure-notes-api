@@ -2,11 +2,31 @@
     import {AuthService} from "../services/AuthService";
     import {link, navigate} from "svelte-navigator";
     import Navbar from "../components/Navbar.svelte";
+    import {toasts} from "svelte-toasts";
 
+    let password1, password2;
+
+    /**
+     * Sends registration request and redirects to home
+     * @param e
+     * @returns {Promise<void>}
+     */
     const handleRegister = async (e) => {
+
+        if (password1 !== password2) {
+            toasts.error("Passwords don't match");
+            return;
+        }
+
+
         let formData = new FormData(e.target);
-        await AuthService.register(formData);
-        navigate('/');
+
+        try {
+            await AuthService.register(formData);
+            navigate('/');
+        } catch (e) {
+            toasts.error(e.message);
+        }
     }
 
 </script>
@@ -15,21 +35,21 @@
 <main>
     <form on:submit|preventDefault={handleRegister} class="form-signin text-center">
         <h1 class="h3 mb-3 font-weight-normal">Registrieren</h1>
-        <label for="inputUsername" class="sr-only">Email Adresse</label>
+        <label for="inputUsername" class="sr-only">Username</label>
         <input type="text" id="inputUsername" name="username" class="form-control"
                placeholder="Username" required>
 
-        <label for="inputEmail" class="sr-only">Passwort</label>
+        <label for="inputEmail" class="sr-only">Email Adresse</label>
         <input type="email" id="inputEmail" name="email" class="form-control"
                placeholder="Email Adresse" required>
 
         <label for="inputPassword" class="sr-only">Passwort</label>
         <input type="password" id="inputPassword" name="password" class="form-control"
-               placeholder="Passwort" required>
+               placeholder="Passwort" required bind:value={password1}>
 
         <label for="inputPasswordRepeat" class="sr-only">Passwort wiederholen</label>
         <input type="password" id="inputPasswordRepeat" class="form-control"
-               placeholder="Passwort wiederholen" required>
+               placeholder="Passwort wiederholen" required bind:value={password2}>
         <button class="btn btn-lg btn-primary btn-block" type="submit">Registrieren</button>
         <p class="mt-1">
             <a href="/login" use:link>Login</a>

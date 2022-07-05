@@ -5,16 +5,24 @@ use Config\Services;
 use Firebase\JWT\JWT;
 use Firebase\JWT\Key;
 
+/**
+ * Returns the bearer token from http request if it exists
+ *
+ * @param $authenticationHeader
+ * @return string
+ * @throws Exception
+ */
 function getJWTFromRequest($authenticationHeader): string
 {
-    if (is_null($authenticationHeader)) { //JWT is absent
+    if (is_null($authenticationHeader)) {
         throw new Exception('Missing or invalid JWT in request');
     }
-    //JWT is sent from client in the format Bearer XXXXXXXXX
     return explode(' ', $authenticationHeader)[1];
 }
 
 /**
+ * Validates an encoded access token and returns its user id
+ *
  * @throws Exception
  */
 function validateAccessJWTFromRequest(string $encodedToken): string
@@ -28,6 +36,8 @@ function validateAccessJWTFromRequest(string $encodedToken): string
 }
 
 /**
+ * Validates an encoded refresh token and returns its user id
+ *
  * @throws Exception
  */
 function validateRefreshJWTFromRequest(string $encodedToken): string
@@ -38,6 +48,8 @@ function validateRefreshJWTFromRequest(string $encodedToken): string
     if ($decodedToken->type !== 'refresh') {
         throw new Exception('invalid token type');
     }
+
+    // check if password hashes still match
     $model = new UserModel();
     $user = $model->find($decodedToken->userId);
 
@@ -48,6 +60,12 @@ function validateRefreshJWTFromRequest(string $encodedToken): string
     return getSignedAccessJWTForUser($user);
 }
 
+/**
+ * Issues new access JWT for a given user
+ *
+ * @param array $user
+ * @return string
+ */
 function getSignedAccessJWTForUser(array $user): string
 {
     $issuedAtTime = time();
@@ -63,6 +81,12 @@ function getSignedAccessJWTForUser(array $user): string
     return JWT::encode($payload, Services::getSecretKey(), 'HS256');
 }
 
+/**
+ * Issues new refresh JWT for a given user
+ *
+ * @param array $user
+ * @return string
+ */
 function getSignedRefreshJWTForUser(array $user): string
 {
     $issuedAtTime = time();
@@ -78,15 +102,4 @@ function getSignedRefreshJWTForUser(array $user): string
     ];
 
     return JWT::encode($payload, Services::getSecretKey(), 'HS256');
-}
-
-
-/**
- * @throws Exception
- */
-function getUserID($authenticationHeader)
-{
-    $encodedToken = getJWTFromRequest($authenticationHeader);
-    $decodedToken = validateAccessJWTFromRequest($encodedToken);
-    return $decodedToken['id'];
 }

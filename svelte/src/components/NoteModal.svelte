@@ -1,3 +1,4 @@
+<!--suppress JSUnresolvedFunction -->
 <script>
     import {DataService} from "../services/DataService";
     import {noteStore, categoryStore} from "../stores";
@@ -12,9 +13,11 @@
     $: newNote = !noteData?.id;
 
     const updateColor = async () => {
+        // find color in loaded category by category_id
         color = await $categoryStore.then(cs => cs.find(c => c.id === noteData?.category_id)?.color ?? '#ffffff');
     }
 
+    // open the modal bootstrap style
     export const show = (note) => {
         updateColor();
         jQuery(modal).modal('show');
@@ -22,24 +25,30 @@
         noteData = note;
     }
 
+    // hide the modal bootstrap style
     export const hide = () => {
         jQuery(modal).modal('hide');
     }
 
+    // submit changes to db
     const handleSubmit = async (e) => {
 
         const formData = new FormData(e.target);
         const user = Utils.getUser();
 
+        // remove category id if marked as NULL
         if (formData.get('category_id') === 'NULL') formData.delete('category_id');
-
         formData.append('user_id', user.id);
 
         if (newNote) {
+            // update db
             const res = await DataService.createNote(formData);
+            // update local
             $noteStore = [res.note, ...$noteStore];
         } else {
+            // update db
             const res = await DataService.updateNote(noteData.id, formData);
+            // update local
             $noteStore = $noteStore.map(note => res.note.id === note.id ? res.note : note);
         }
         hide();
@@ -48,7 +57,9 @@
 
     const handleNoteDeleted = () => {
         if (confirm('Notiz wirklich löschen?')) {
+            // update db
             DataService.deleteNote(noteData.id);
+            // update local
             $noteStore = $noteStore.filter(note => note.id !== noteData.id);
             hide();
         }

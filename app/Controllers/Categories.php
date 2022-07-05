@@ -6,11 +6,19 @@ use App\Models\CategoryModel;
 use CodeIgniter\HTTP\ResponseInterface;
 use Exception;
 
+/**
+ *
+ */
 class Categories extends BaseController
 {
+    /**
+     * @return ResponseInterface
+     */
     public function index(): ResponseInterface
     {
         try {
+
+            // get userid from provided jwt token
             helper('jwt');
             $encodedToken = getJWTFromRequest($this->request->getServer('HTTP_AUTHORIZATION'));
             $userID = validateAccessJWTFromRequest($encodedToken);
@@ -33,6 +41,12 @@ class Categories extends BaseController
         }
     }
 
+
+    /**
+     * Allows storing a new category to the database
+     *
+     * @return ResponseInterface containing the created category
+     */
     public function store(): ResponseInterface
     {
         $rules = [
@@ -75,7 +89,13 @@ class Categories extends BaseController
         }
     }
 
-    public function destroy($id): ResponseInterface
+    /**
+     * Deletes a specified category from the database
+     *
+     * @param int $id
+     * @return ResponseInterface
+     */
+    public function destroy(int $id): ResponseInterface
     {
         try {
             helper('jwt');
@@ -84,6 +104,7 @@ class Categories extends BaseController
 
             $model = new CategoryModel();
             $category = $model->findCategoryById($id);
+            // test if the category's userid is matching the one provided in the jwt
             $model->checkOwnership($category, $userId);
             $model->delete($id);
 
@@ -104,7 +125,14 @@ class Categories extends BaseController
         }
     }
 
-    public function  update($id): ResponseInterface
+    /**
+     *
+     * Updates a category with given id
+     *
+     * @param int $id category id
+     * @return ResponseInterface
+     */
+    public function update(int $id): ResponseInterface
     {
         $rules = [
             'name' => 'required|max_length[100]',

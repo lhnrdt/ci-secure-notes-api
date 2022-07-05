@@ -7,8 +7,17 @@ use CodeIgniter\HTTP\ResponseInterface;
 use Exception;
 use ReflectionException;
 
+/**
+ *
+ */
 class Notes extends BaseController
 {
+    /**
+     * get all notes matching the userID provided in the JWT
+     * allows pagination and filtering by category and search query
+     *
+     * @return ResponseInterface
+     */
     public function index(): ResponseInterface
     {
 
@@ -47,7 +56,8 @@ class Notes extends BaseController
 
 
     /**
-     * @throws ReflectionException
+     *  Stores new note to database
+     *
      */
     public function store(): ResponseInterface
     {
@@ -57,43 +67,49 @@ class Notes extends BaseController
             'user_id' => 'required',
         ];
 
-            $input = $this->getRequestInput($this->request);
+        $input = $this->getRequestInput($this->request);
 
-            // if it doesn't validate respond with bad request
-            if (!$this->validateRequest($input, $rules)) {
-                return $this
-                    ->getResponse(
-                        [
-                            'message' => 'Validation failed'
-                        ],
-                        ResponseInterface::HTTP_BAD_REQUEST
-                    );
-            }
+        // if it doesn't validate respond with bad request
+        if (!$this->validateRequest($input, $rules)) {
+            return $this
+                ->getResponse(
+                    [
+                        'message' => 'Validation failed'
+                    ],
+                    ResponseInterface::HTTP_BAD_REQUEST
+                );
+        }
 
-            try {
-                $model = new NoteModel();
-                $model->save($input);
-                $note = $model->findNoteById($model->getInsertID());
-                return $this
-                    ->getResponse(
-                        [
-                            'message' => 'Notes added successfully',
-                            'note' => $note
-                        ]
-                    );
-            } catch (Exception $e) {
-                return $this
-                    ->getResponse(
-                        [
-                            'message' => $e->getMessage()
-                        ],
-                        ResponseInterface::HTTP_BAD_REQUEST
-                    );
-            }
+        try {
+            $model = new NoteModel();
+            $model->save($input);
+            $note = $model->findNoteById($model->getInsertID());
+            return $this
+                ->getResponse(
+                    [
+                        'message' => 'Notes added successfully',
+                        'note' => $note
+                    ]
+                );
+        } catch (Exception $e) {
+            return $this
+                ->getResponse(
+                    [
+                        'message' => $e->getMessage()
+                    ],
+                    ResponseInterface::HTTP_BAD_REQUEST
+                );
+        }
 
 
     }
 
+    /**
+     * Reads a specific note from the database
+     *
+     * @param $id
+     * @return ResponseInterface
+     */
     public function show($id): ResponseInterface
     {
         try {
@@ -121,6 +137,13 @@ class Notes extends BaseController
         }
     }
 
+    /**
+     *
+     * Deletes specified note from database
+     *
+     * @param $id
+     * @return ResponseInterface
+     */
     public function destroy($id): ResponseInterface
     {
         try {
@@ -130,6 +153,7 @@ class Notes extends BaseController
 
             $model = new NoteModel();
             $note = $model->findNoteById($id);
+            // check matching user ids
             $model->checkOwnership($note, $userId);
             $model->delete($id);
 
@@ -149,6 +173,13 @@ class Notes extends BaseController
         }
     }
 
+    /**
+     *
+     * Updates specified note
+     *
+     * @param $id
+     * @return ResponseInterface
+     */
     public function update($id): ResponseInterface
     {
         $rules = [

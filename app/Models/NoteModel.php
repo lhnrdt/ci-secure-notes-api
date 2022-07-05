@@ -56,9 +56,12 @@ class NoteModel extends Model
             ->join('category', 'category.id = note.category_id', 'left')
             ->where(['note.user_id' => $user]);
 
+        // append where if query should be filtered by category
         if ($categoryID) {
             $builder->where('category.id', $categoryID);
         }
+
+        // append filters if search query is given
         if ($searchQuery) {
             $builder->groupStart()
                 ->orLike('category.name', $searchQuery)
@@ -66,13 +69,18 @@ class NoteModel extends Model
                 ->orLike('note.title', $searchQuery)
                 ->groupEnd();
         }
+
+        // returns found notes and info if there are more notes available to prevent
+        // unnecessary network calls when lazy loading content
+
         return [
-            'note' => $this->findAll($limit, $offset),
-            'hasMore' => count($this->findAll($limit, $offset + $limit)) > 0
+            'note' => $builder->get($limit, $offset, false)->getResult(),
+            'hasMore' => count($builder->get($limit, $offset + $limit)->getResult()) > 0,
         ];
     }
 
     /**
+     *
      * @throws Exception
      */
     public function checkOwnership($note, $userId)

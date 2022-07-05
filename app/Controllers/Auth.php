@@ -7,9 +7,14 @@ use CodeIgniter\HTTP\ResponseInterface;
 use Exception;
 use ReflectionException;
 
+/**
+ * Authentication Controller
+ */
 class Auth extends BaseController
 {
     /**
+     * Allows the user to register himself
+     *
      * @throws ReflectionException
      */
     public function register(): ResponseInterface
@@ -21,6 +26,8 @@ class Auth extends BaseController
         ];
 
         $input = $this->getRequestInput($this->request);
+
+        // validate user input
         if (!$this->validateRequest($input, $rules)) {
             return $this
                 ->getResponse(
@@ -32,15 +39,19 @@ class Auth extends BaseController
         $userModel = new UserModel();
         $userModel->save($input);
 
-
+        // create auth tokens for new user
         return $this
             ->getJWTForUser(
                 $input['email'],
                 ResponseInterface::HTTP_CREATED
             );
-
     }
 
+    /**
+     * @param string $emailAddress
+     * @param int $responseCode
+     * @return ResponseInterface
+     */
     private function getJWTForUser(
         string $emailAddress,
         int    $responseCode = ResponseInterface::HTTP_OK
@@ -53,13 +64,16 @@ class Auth extends BaseController
             helper('jwt');
             helper('cookie');
 
+            // save the refresh token as http-only cookie to prevent Clientside access
             set_cookie('refresh_token',
                 getSignedRefreshJWTForUser($user),
                 '', '', '/', '', false, true
             );
 
+            // remove the password from the returned user
             unset($user["password"]);
 
+            // respond with user and access token
             return $this
                 ->getResponse(
                     [
@@ -99,7 +113,7 @@ class Auth extends BaseController
 
         $input = $this->getRequestInput($this->request);
 
-
+        // validate credentials
         if (!$this->validateRequest($input, $rules, $errors)) {
             return $this
                 ->getResponse(
@@ -110,6 +124,11 @@ class Auth extends BaseController
         return $this->getJWTForUser($input['email']);
     }
 
+    /**
+     * Delete refresh token cookie
+     *
+     * @return ResponseInterface
+     */
     public function logout(): ResponseInterface
     {
         helper('cookie');
@@ -123,6 +142,8 @@ class Auth extends BaseController
     }
 
     /**
+     * validates refresh token and issues new access token
+     *
      * @throws Exception
      */
     public function refreshToken(): ResponseInterface

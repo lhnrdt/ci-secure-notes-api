@@ -3,8 +3,22 @@ import {AuthService} from "./AuthService";
 import {navigate} from "svelte-navigator";
 import {toasts} from "svelte-toasts";
 
-function createDataService() {
-    async function getResource(url) {
+const createDataService = () => {
+
+    // Tries to request new access token before executing callback function passed as argument
+    const refreshToken = async callback => {
+        try {
+            await AuthService.renewAccessToken();
+            return await callback();
+        } catch (e) {
+            // refresh token is expired
+            toasts.error("Login expired, please login again.");
+            navigate('/login');
+        }
+    };
+
+    // gets a specific resource from the api, refreshes token if necessary
+    const getResource = async url => {
         const response = await fetch(url, {headers: authHeader()});
 
         // access token is valid
@@ -16,10 +30,10 @@ function createDataService() {
         if (response.status === 401) {
             return await refreshToken(() => getResource(url))
         }
+    };
 
-    }
-
-    async function postResource(url, formData) {
+    // save a specific resource to the api, refreshes token if necessary
+    const postResource = async (url, formData) => {
         const response = await fetch(url, {
             method: 'post',
             headers: authHeader(),
@@ -40,9 +54,10 @@ function createDataService() {
             toasts.success(responseJSON.message);
             return responseJSON;
         }
-    }
+    };
 
-    async function deleteResource(url) {
+    // delete a specific resource to the api, refreshes token if necessary
+    const deleteResource = async url => {
         const response = await fetch(url, {
             method: 'delete',
             headers: authHeader()
@@ -56,30 +71,13 @@ function createDataService() {
             let responseJSON = await response.json();
             toasts.success(responseJSON.message);
         }
-    }
+    };
 
-    async function refreshToken(callback) {
-        try {
-            await AuthService.renewAccessToken();
-            return await callback();
-        } catch (e) {
-            // refresh token is expired
-            toasts.error("Login expired, please login again.");
-            navigate('/login');
-        }
-    }
 
-    async function createNote(formData) {
-        return await postResource(`/api/notes/`, formData);
-    }
-
-    async function updateNote(id, formData) {
-        return await postResource(`/api/notes/${id}`, formData)
-    }
-
-    async function deleteNote(id) {
-        await deleteResource(`/api/notes/${id}`)
-    }
+    // wrapper functions for specific resources
+    const createNote = async formData => await postResource(`/api/notes/`, formData);
+    const updateNote = async (id, formData) => await postResource(`/api/notes/${id}`, formData);
+    const deleteNote = async id => await deleteResource(`/api/notes/${id}`);
 
     return {
         getResource,
@@ -89,6 +87,6 @@ function createDataService() {
         deleteNote,
         updateNote,
     }
-}
+};
 
 export const DataService = createDataService();
