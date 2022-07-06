@@ -32,6 +32,7 @@
         <label for="inputPassword" class="sr-only">Passwort</label>
         <input type="password" id="inputPassword" name="password" class="form-control"
                placeholder="Passwort" required>
+
         <button class="btn btn-lg btn-primary btn-block" type="submit">Login</button>
         <p class="mt-1">
             <a href="/register" use:link>Register</a>

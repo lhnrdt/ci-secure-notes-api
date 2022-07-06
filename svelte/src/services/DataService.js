@@ -12,7 +12,6 @@ const createDataService = () => {
             return await callback();
         } catch (e) {
             // refresh token is expired
-            toasts.error("Login expired, please login again.");
             navigate('/login');
         }
     };

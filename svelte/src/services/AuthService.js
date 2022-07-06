@@ -15,6 +15,9 @@ const createAuthService = () => {
         if (response.status === 400) {
             throw new Error('Invalid Login Credentials');
         }
+        if (!response.ok) {
+            throw new Error('Server Error');
+        }
     };
 
     // sends login request
@@ -25,7 +28,7 @@ const createAuthService = () => {
         });
 
         const user = await processAuthResponse(res);
-        toasts.success("Login successful.");
+        if (user) toasts.success("Login successful.");
         return user;
     };
 
