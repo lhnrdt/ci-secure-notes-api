@@ -1,11 +1,11 @@
 <!--suppress JSUnresolvedFunction -->
 <script>
     import {DataService} from "../services/DataService";
-    import {noteStore, categoryStore} from "../stores";
+    import {noteStore, categoryStore, EMPTY_NOTE} from "../stores";
     import {Utils} from "../services/Utils";
     import CategorySkeleton from "./skeletons/CategorySkeleton.svelte";
 
-    export let noteData;
+    let noteData = EMPTY_NOTE;
     let modal;
     let color;
     let newNote;
@@ -19,15 +19,17 @@
 
     // open the modal bootstrap style
     export const show = (note) => {
-        updateColor();
-        jQuery(modal).modal('show');
         if (!note.category_id) note.category_id = 'NULL';
         noteData = note;
+        console.log(noteData)
+        updateColor();
+        jQuery(modal).modal('show');
     }
 
     // hide the modal bootstrap style
     export const hide = () => {
         jQuery(modal).modal('hide');
+        noteData = EMPTY_NOTE;
     }
 
     // submit changes to db

@@ -7,6 +7,11 @@ export const selectedCategory = writable(null);
 export const NOTES_PER_REQUEST = 5;
 export const timeout = writable(null);
 
+export const EMPTY_NOTE = {
+    category_id: 'NULL',
+    title: '',
+    content: '',
+}
 
 export const createNoteStore = () => {
     const {subscribe, update, set} = writable([])

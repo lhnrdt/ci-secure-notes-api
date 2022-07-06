@@ -7,6 +7,7 @@
         selectedCategory,
         searchQuery,
         NOTES_PER_REQUEST,
+        EMPTY_NOTE,
         timeout
     } from "../stores";
     import Note from "../components/Note.svelte";
@@ -26,23 +27,18 @@
     let hasMore = true;
     let loadingMore = false;
 
-    // note template to use when creating a new note
-    const EMPTY_NOTE = {
-        category_id: 'NULL',
-        title: '',
-        content: '',
-    }
+
 
     // load more content, when user has reached bottom of the page
     const onScroll = async () => {
-        const OFFSET = 1;
+        const OFFSET_PX = 25;
         const {
             scrollTop,
             scrollHeight,
             clientHeight
         } = document.documentElement;
 
-        if (hasMore && !loadingMore && scrollTop + clientHeight >= scrollHeight - OFFSET) {
+        if (hasMore && !loadingMore && scrollTop + clientHeight >= scrollHeight - OFFSET_PX) {
             // prevent loading content twice if the last request has not finished yet
             loadingMore = true;
 
@@ -137,5 +133,5 @@
         </div>
     </div>
 </div>
-<NoteModal bind:this={noteModal} noteData={EMPTY_NOTE}/>
+<NoteModal bind:this={noteModal}/>
 <CategoryModal bind:this={categoryModal}/>
