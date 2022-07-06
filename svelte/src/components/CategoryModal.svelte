@@ -5,10 +5,20 @@
     import {categoryStore, noteStore} from "../stores";
 
 
-    const SELECTABLE_COLORS = ["#fbb4ae", "#b3cde3", "#ccebc5", "#decbe4", "#fed9a6", "#ffffcc", "#e5d8bd", "#fddaec", "#f2f2f2"];
+    const COLOR_PRESETS = [
+        "#fbb4ae",
+        "#b3cde3",
+        "#ccebc5",
+        "#decbe4",
+        "#fed9a6",
+        "#ffffcc",
+        "#e5d8bd",
+        "#fddaec",
+        "#f2f2f2"
+    ];
     const EMPTY_CATEGORY = {
         name: '',
-        color: SELECTABLE_COLORS[0]
+        color: COLOR_PRESETS[0]
     }
 
     let modal;
@@ -79,16 +89,20 @@
 
                     <div class="input-group mb-3">
                         <label class="input-group-text" for="selectColor">Farbe</label>
-                        <select id="selectColor" name="color" class="form-select" aria-label="Color"
+                        <input
+                                type="color"
+                                id="selectColor"
+                                name="color"
+                                class="form-control form-control-color"
+                                aria-label="Color"
+                                list="colorPresets"
                                 bind:value={categoryData.color}
-                                style:background-color={categoryData.color}
-                        >
-                            {#each SELECTABLE_COLORS as color}
-                                <option value={color} style:background-color={color}>
-                                    {color}
-                                </option>
+                        />
+                        <datalist id="colorPresets">
+                            {#each COLOR_PRESETS as color}
+                                <option value={color}>{color}</option>
                             {/each}
-                        </select>
+                        </datalist>
                     </div>
                 </div>
                 <div class="modal-footer">

@@ -9,7 +9,7 @@
             data-toggle="button"
             aria-pressed="false"
     >
-        <Plus width={24} height={24}/>
+        <Plus width={30} height={30}/>
     </button>
 </div>
 
