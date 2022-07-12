@@ -76,7 +76,7 @@
                 return res;
             })
             .then(res => {
-                if (res['hasMore']) fillScreen();
+                if (res['hasMore']) fillScreen().then(onScroll);
             });
     }
     // if search query or selected category changes reinitialize notes
@@ -124,7 +124,13 @@
                         {/each}
                     {/if}
                 </div>
-
+                {#if !hasMore}
+                    <div class="row text-center fs-5 mt-5 mb-3">
+                        <div class="col">
+                            <small class="text-muted">Alle Notizen geladen.</small>
+                        </div>
+                    </div>
+                {/if}
                 <AddButton on:click={() => noteModal.show(EMPTY_NOTE)}/>
             </main>
 

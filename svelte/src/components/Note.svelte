@@ -1,7 +1,5 @@
 <script>
 
-    import {scale} from 'svelte/transition';
-    import {expoInOut} from 'svelte/easing';
     import {createEventDispatcher} from "svelte";
     import {searchQuery} from "../stores";
 
@@ -20,7 +18,7 @@
 
 </script>
 
-<div class="col" in:scale={{duration: 200, easing: expoInOut}}>
+<div class="col">
     <div class="card note h-100"
          on:click={() => dispatch('noteClicked', {note: note})}
          style:background-color={note.color}
