@@ -49,9 +49,7 @@ const createDataService = () => {
         }
 
         if (response.status === 200) {
-            let responseJSON = await response.json();
-            toasts.success(responseJSON.message);
-            return responseJSON;
+            return await response.json();
         }
     };
 

@@ -27,8 +27,6 @@
     let hasMore = true;
     let loadingMore = false;
 
-
-
     // load more content, when user has reached bottom of the page
     const onScroll = async () => {
         const OFFSET_PX = 25;

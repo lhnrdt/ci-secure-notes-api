@@ -1,4 +1,3 @@
-import {toasts} from "svelte-toasts";
 import {navigate} from "svelte-navigator";
 
 const createAuthService = () => {
@@ -27,9 +26,7 @@ const createAuthService = () => {
             body: formData
         });
 
-        const user = await processAuthResponse(res);
-        if (user) toasts.success("Login successful.");
-        return user;
+        return await processAuthResponse(res);
     };
 
     // sends register request
@@ -39,9 +36,7 @@ const createAuthService = () => {
             body: formData
         });
 
-        const user = await processAuthResponse(res);
-        toasts.success("Registration successful.");
-        return user;
+        return await processAuthResponse(res);
     };
 
 
@@ -50,7 +45,6 @@ const createAuthService = () => {
         await fetch('auth/logout');
         localStorage.removeItem('access_token');
         localStorage.removeItem('user');
-        toasts.success('Ausgeloggt.')
         navigate('/login');
     };
 
