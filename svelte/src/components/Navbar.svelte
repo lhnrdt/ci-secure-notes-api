@@ -84,12 +84,12 @@
                                 <PersonFill/>
                             </div>
                             <div class="ms-2">
-                                <strong>{user?.username ?? 'not logged in'}</strong>
+                                <strong role="button" class="user-select-none">{user?.username ?? 'not logged in'}</strong>
                             </div>
                         </a>
                         <ul class="dropdown-menu dropdown-menu-dark text-small shadow position-absolute "
                             aria-labelledby="dropdownUser1">
-                            <li><a class="dropdown-item" on:click|preventDefault={handleLogout} href="/">Sign out</a>
+                            <li><a class="dropdown-item user-select-none" on:click|preventDefault={handleLogout} href="/">Sign out</a>
                             </li>
                         </ul>
                     </div>

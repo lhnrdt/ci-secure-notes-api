@@ -15,7 +15,7 @@
         <div class="card-body">
             <h5 class="skeleton shine"></h5>
             <p>
-                {#each Array(getRandomInt(10, 20)) as _, i}
+                {#each Array(getRandomInt(4,7)) as _, i}
                     <span class="skeleton shine"></span>
                 {/each}
             </p>
@@ -35,10 +35,15 @@
     }
 
     .skeleton {
-        display: block;
-        width: 20ch;
+        margin-top: .5rem;
+        display: inline-block;
+        width: 100%;
         height: 1rem;
         background: #e7e7e7;
+    }
+
+    .skeleton:last-child {
+        width: 40%;
     }
 
     .shine {

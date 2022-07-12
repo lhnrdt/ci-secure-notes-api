@@ -1,5 +1,6 @@
 <script>
     import {onMount} from "svelte";
+    import {navigate} from "svelte-navigator";
     import {DataService} from "../services/DataService";
     import {
         noteStore,
@@ -15,7 +16,6 @@
     import AddButton from "../components/AddButton.svelte";
     import Sidebar from "../components/Sidebar.svelte";
     import CategoryModal from "../components/CategoryModal.svelte";
-    import {navigate} from "svelte-navigator";
     import Navbar from "../components/Navbar.svelte";
     import NoteSkeleton from "../components/skeletons/NoteSkeleton.svelte";
 
@@ -29,7 +29,7 @@
 
     // load more content, when user has reached bottom of the page
     const onScroll = async () => {
-        const OFFSET_PX = 25;
+        const OFFSET_PX = 300;
         const {
             scrollTop,
             scrollHeight,
@@ -60,7 +60,8 @@
             loadingMore = true;
             const res = await noteStore.getMore($searchQuery, $selectedCategory?.id);
             if (!!res.note.length) noteStore.add(res.note);
-            if (res['hasMore']) await fillScreen();
+            hasMore = res['hasMore']
+            if (hasMore) await fillScreen();
         }
         loadingMore = false;
     }
@@ -81,7 +82,6 @@
     }
     // if search query or selected category changes reinitialize notes
     $:  initNotes($searchQuery, $selectedCategory?.id);
-
 
     // redirect to /login if user is not logged in
     if (!localStorage.getItem('user')) {
@@ -106,6 +106,8 @@
                 <div class="row">
                     {#if ($selectedCategory)}
                         <h3>{$selectedCategory.name}</h3>
+                    {:else if $searchQuery}
+                        <h3>Ergebnisse für "{$searchQuery}"</h3>
                     {:else}
                         <h3>Alle Notizen</h3>
                     {/if}

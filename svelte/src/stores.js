@@ -4,14 +4,9 @@ import {DataService} from "./services/DataService";
 export const searchQuery = writable("");
 export const categoryStore = writable([]);
 export const selectedCategory = writable(null);
-export const NOTES_PER_REQUEST = 5;
-export const timeout = writable(null);
-
-export const EMPTY_NOTE = {
-    category_id: 'NULL',
-    title: '',
-    content: '',
-}
+export const timeout = writable();
+export const NOTES_PER_REQUEST = 10;
+export const EMPTY_NOTE = {category_id: 'NULL', title: '', content: ''};
 
 export const createNoteStore = () => {
     const {subscribe, update, set} = writable([])
