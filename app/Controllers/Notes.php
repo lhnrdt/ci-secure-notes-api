@@ -113,8 +113,12 @@ class Notes extends BaseController
     public function show($id): ResponseInterface
     {
         try {
+            helper('jwt');
+            $encodedToken = getJWTFromRequest($this->request->getServer('HTTP_AUTHORIZATION'));
+            $userId = validateAccessJWTFromRequest($encodedToken);
             $model = new NoteModel();
             $note = $model->findNoteById($id);
+            $model->checkOwnership($note, $userId);
 
             return $this
                 ->getResponse(
@@ -129,7 +133,7 @@ class Notes extends BaseController
             return $this
                 ->getResponse(
                     [
-                        'message' => 'Could not find not for specified ID',
+                        'message' => $e->getMessage(),
                     ],
                     ResponseInterface::HTTP_NOT_FOUND
                 );

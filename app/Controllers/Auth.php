@@ -111,6 +111,7 @@ class Auth extends BaseController
             ]
         ];
 
+
         $input = $this->getRequestInput($this->request);
 
         // validate credentials
