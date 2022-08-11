@@ -4,6 +4,10 @@
 
 Part of a bachelor's thesis exploring the usage of single page applications and JWTs.
 
+## Demo
+A demo can be found on
+http://notes.lehnerdt.eu/
+
 ## Installation
 
 You need to have PHP, Composer and npm installed on your System.
