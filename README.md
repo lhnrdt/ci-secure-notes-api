@@ -5,8 +5,8 @@
 Part of a bachelor's thesis exploring the usage of single page applications and JWTs.
 
 ## Demo
-A demo can be found on
-http://notes.lehnerdt.eu/
+A demo can be found on http://notes.lehnerdt.eu/ 
+Use only for testing! Privacy of notes saved cannot be guaranteed.
 
 ## Installation
 
