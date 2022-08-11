@@ -16,6 +16,15 @@ and any database settings. As well as setting a JWT secret key `JWT_SECRET_KEY`
 
 - run `php spark serve`
 - run `npm run dev`
+
+Build database with
+- `php spark migrate`
+
+For deployment set environment to `production` in `.env`.
+Compile JS with
+
+- `npm run build`
+
 ## Server Requirements
 
 PHP version 7.3 or higher is required, with the following extensions installed:
