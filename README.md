@@ -6,19 +6,26 @@ Part of a bachelor's thesis exploring the usage of single page applications and 
 
 ## Installation
 
+You need to have PHP, Composer and npm installed on your System.
+
 - `composer update` to download PHP packages
 - `npm install` to download JS dependencies
 
 ## Setup
 
 Copy `env` to `.env` and tailor for your app, specifically the baseURL
-and any database settings. As well as setting a JWT secret key `JWT_SECRET_KEY`
+and any database settings. As well as setting a JWT secret key `JWT_SECRET_KEY` and token validity periods
 
 - run `php spark serve`
 - run `npm run dev`
 
 Build database with
 - `php spark migrate`
+
+Add optional sample Data to the Database with
+- `php spark db:seed UserSeeder`
+- `php spark db:seed NoteSeeder`
+- `php spark db:seed CategorySeeder`
 
 For deployment set environment to `production` in `.env`.
 Compile JS with
