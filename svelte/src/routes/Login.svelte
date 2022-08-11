@@ -37,7 +37,7 @@
         <p class="mt-1">
             <a href="/register" use:link>Register</a>
         </p>
-        <p class="mt-5 mb-3 text-muted">&copy; 2022</p>
+        <p class="mt-5 mb-3 text-muted">Version 1.0.0 - developed by J Lehnerdt</p>
     </form>
 </main>
 
